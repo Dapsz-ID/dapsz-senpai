@@ -81,22 +81,21 @@
       transform: scale(1.05);
       box-shadow: 0 0 18px #1e90ff66;
     }
-
-    .result {
-      margin-top: 20px;
-      min-height: 120px;
-      text-align: left;
-      white-space: pre-wrap;
-    }
     
-.result img,
-.result video {
+.result {
   max-width: 100%;
   width: 100%;
+  overflow-x: hidden;
+  text-align: center;
+}
+
+.result img,
+.result video {
+  max-width: 95%;
   height: auto;
   border-radius: 12px;
-  display: block;
-  margin: 10px 0;
+  display: inline-block;
+  margin: 10px auto;
   object-fit: contain;
 }
     
