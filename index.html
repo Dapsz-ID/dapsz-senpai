@@ -404,7 +404,6 @@
     };
 
     // TikTok Downloader
-    // TikTok Downloader
 window.downloadTiktok = async function () {
   const url = document.getElementById("tiktok-url").value.trim();
   const resultDiv = document.getElementById("result");
@@ -416,17 +415,22 @@ window.downloadTiktok = async function () {
     const response = await fetch(apiEndpoint);
     const data = await response.json();
 
-    if (data?.status === true && data?.result?.play) {
-      const videoUrl = data.result.play;
-      resultDiv.innerHTML = `
-        <p>Video TikTok:</p>
-        <video controls autoplay muted loop playsinline>
-          <source src="${videoUrl}" type="video/mp4"/>
-        </video>
-        <br/>
-        <a class="download-btn" href="${videoUrl}" target="_blank" download="tiktok.mp4">⬇️ Download Video</a>`;
+    if (data?.status === true && data?.result) {
+      const videoUrl = data.result.hdplay || data.result.play || data.result.wmplay;
+
+      if (videoUrl) {
+        resultDiv.innerHTML = `
+          <p><strong>${data.result.title || "Video TikTok"}</strong></p>
+          <video controls autoplay muted loop playsinline width="100%">
+            <source src="${videoUrl}" type="video/mp4"/>
+          </video>
+          <br/>
+          <a class="download-btn" href="${videoUrl}" target="_blank" download="tiktok.mp4">⬇️ Download Video</a>`;
+      } else {
+        resultDiv.innerHTML = "<p>Tidak ditemukan link video dalam respon API.</p>";
+      }
     } else {
-      resultDiv.innerHTML = "<p>Gagal mendapatkan video.</p>";
+      resultDiv.innerHTML = `<p>Gagal mendapatkan video: ${data?.message || "Unknown error"}</p>`;
     }
   } catch (e) {
     resultDiv.innerHTML = `<p>Error: ${e.message}</p>`;
