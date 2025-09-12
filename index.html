@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dapsz Senpai</title>
+  <style>
+    body {
+      background: #000;
+      color: #eee;
+      font-family: "Poppins", Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-size: 2.3rem;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, #1e90ff, #00aaff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 15px #0077ff;
+    }
+
+    .container {
+      background: rgba(25, 25, 25, 0.95);
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(0,119,255,0.3);
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      margin: 80px auto 40px;
+      box-sizing: border-box;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      border: 2px solid #1e90ff;
+      outline: none;
+      font-size: 1rem;
+      background: #111;
+      color: #eee;
+      transition: 0.3s;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #00aaff;
+      box-shadow: 0 0 12px #00aaff88;
+    }
+
+    button {
+      background: linear-gradient(90deg, #1e90ff, #00aaff);
+      border: none;
+      padding: 12px 25px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1rem;
+      color: #111;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin: 0 auto;
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 18px #1e90ff66;
+    }
+
+    .result {
+      margin-top: 20px;
+      min-height: 120px;
+      text-align: left;
+      white-space: pre-wrap;
+    }
+
+    .loader {
+      border: 4px solid #333;
+      border-top: 4px solid #1e90ff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: rgba(25, 25, 25, 0.95);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.7);
+      z-index: 1001;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      user-select: none;
+    }
+
+    .hamburger {
+      position: fixed;
+      top: 15px;
+      right: 20px;
+      width: 30px;
+      height: 22px;
+      cursor: pointer;
+      z-index: 1100;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .hamburger span {
+      display: block;
+      height: 4px;
+      background: #1e90ff;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: -280px;
+      width: 280px;
+      height: 100vh;
+      background: rgba(15, 15, 15, 0.98);
+      box-shadow: -2px 0 15px rgba(0,119,255,0.5);
+      backdrop-filter: blur(15px);
+      padding: 60px 20px 20px;
+      box-sizing: border-box;
+      transition: right 0.3s ease;
+      z-index: 1050;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .sidebar.open { right: 0; }
+
+    .sidebar h2 {
+      color: #1e90ff;
+      margin: 0 0 15px 0;
+      font-weight: 700;
+      user-select: none;
+    }
+
+    .sidebar button.menu-item {
+      background: none;
+      border: none;
+      color: #00aaff;
+      font-size: 1.1rem;
+      text-align: left;
+      padding: 10px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+      user-select: none;
+    }
+
+    .sidebar button.menu-item:hover,
+    .sidebar button.menu-item.active {
+      background: #1e90ff22;
+      color: #1e90ff;
+      font-weight: 700;
+    }
+
+    /* Chat bubble */
+    .chat-container {
+      max-height: 400px;
+      overflow-y: auto;
+      text-align: left;
+      padding: 10px;
+      border-radius: 12px;
+      background: rgba(20,20,20,0.6);
+      margin-top: 15px;
+    }
+
+    .bubble {
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 16px;
+      margin: 6px 0;
+      max-width: 80%;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    .bubble.user {
+      background: #1e90ff;
+      color: #fff;
+      border-bottom-right-radius: 4px;
+      float: right;
+      clear: both;
+    }
+
+    .bubble.ai {
+      background: #333;
+      color: #eee;
+      border-bottom-left-radius: 4px;
+      float: left;
+      clear: both;
+    }
+
+    @media (max-width: 500px) {
+      .container { margin: 80px 15px 40px; max-width: 100%; }
+      .sidebar { width: 240px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Dapsz Senpai</h1>
+  </header>
+
+  <div class="hamburger" id="hamburger" role="button" tabindex="0">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <nav class="sidebar" id="sidebar">
+    <h2>Menu</h2>
+    <button class="menu-item active" id="menu-welcome">Beranda</button>
+    <button class="menu-item" id="menu-generator">iPhone Quoted Generator</button>
+    <button class="menu-item" id="menu-tiktok">TikTok Downloader</button>
+    <button class="menu-item" id="menu-deepseek">DeepSeek-AI</button>
+  </nav>
+
+  <main>
+    <div class="container" id="content"></div>
+  </main>
+
+  <script>
+    const hamburger = document.getElementById("hamburger");
+    const sidebar = document.getElementById("sidebar");
+    const content = document.getElementById("content");
+    const menuWelcome = document.getElementById("menu-welcome");
+    const menuGenerator = document.getElementById("menu-generator");
+    const menuTiktok = document.getElementById("menu-tiktok");
+    const menuDeepSeek = document.getElementById("menu-deepseek");
+
+    function toggleSidebar() {
+      const isOpen = sidebar.classList.toggle("open");
+      hamburger.classList.toggle("active", isOpen);
+    }
+    hamburger.addEventListener("click", toggleSidebar);
+
+    function clearActiveMenu() {
+      document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
+    }
+
+    function renderWelcome() {
+      content.innerHTML = `
+        <p style="font-size:1.2rem; line-height:1.5; user-select:none;">
+          Selamat Datang Di Website Dapsz Senpai,<br/>
+          Silahkan klik garis tiga di kanan atas untuk info lebih lanjut
+        </p>`;
+    }
+
+    function renderGenerator() {
+      content.innerHTML = `
+        <input type="text" id="message" placeholder="Isi Kata Kata"/>
+        <button onclick="generateImage()">Send</button>
+        <div class="result" id="result"></div>`;
+    }
+
+    function renderTiktokDownloader() {
+      content.innerHTML = `
+        <input type="url" id="tiktok-url" placeholder="Masukkan URL TikTok"/>
+        <button onclick="downloadTiktok()">Download</button>
+        <div class="result" id="result"></div>`;
+    }
+
+    function renderDeepSeek() {
+      content.innerHTML = `
+        <textarea id="deepseek-input" placeholder="Tulis pertanyaan atau perintah untuk AI..."></textarea>
+        <button onclick="askDeepSeek()">Kirim</button>
+        <div class="chat-container" id="deepseek-chat"></div>`;
+    }
+
+    menuWelcome.addEventListener("click", () => {
+      clearActiveMenu();
+      menuWelcome.classList.add("active");
+      renderWelcome();
+      toggleSidebar();
+    });
+
+    menuGenerator.addEventListener("click", () => {
+      clearActiveMenu();
+      menuGenerator.classList.add("active");
+      renderGenerator();
+      toggleSidebar();
+    });
+
+    menuTiktok.addEventListener("click", () => {
+      clearActiveMenu();
+      menuTiktok.classList.add("active");
+      renderTiktokDownloader();
+      toggleSidebar();
+    });
+
+    menuDeepSeek.addEventListener("click", () => {
+      clearActiveMenu();
+      menuDeepSeek.classList.add("active");
+      renderDeepSeek();
+      toggleSidebar();
+    });
+
+    renderWelcome();
+
+    // iPhone Quoted Generator
+    window.generateImage = function () {
+      const message = document.getElementById("message").value.trim();
+      const resultDiv = document.getElementById("result");
+      if (!message) return alert("Harap masukkan teks!");
+
+      resultDiv.innerHTML = '<div class="loader"></div><p>Sedang memproses...</p>';
+      const apiUrl = `https://brat.siputzx.my.id/iphone-quoted?time=11%3A26&messageText=${encodeURIComponent(message)}&carrierName=INDOSAT%20OOREDOO&batteryPercentage=88&signalStrength=4&emojiStyle=apple`;
+
+      setTimeout(() => {
+        resultDiv.innerHTML = `
+          <p>Hasil:</p>
+          <img src="${apiUrl}" alt="hasil"/>
+          <br/>
+          <a class="download-btn" href="${apiUrl}" target="_blank" download>⬇️ Download</a>`;
+      }, 800);
+    };
+
+    // TikTok Downloader
+    window.downloadTiktok = async function () {
+      const url = document.getElementById("tiktok-url").value.trim();
+      const resultDiv = document.getElementById("result");
+      if (!url) return alert("Harap masukkan URL!");
+
+      resultDiv.innerHTML = '<div class="loader"></div><p>Mengunduh video TikTok...</p>';
+      try {
+        const apiEndpoint = `https://api.siputzx.my.id/api/d/tiktok?url=${encodeURIComponent(url)}`;
+        const response = await fetch(apiEndpoint);
+        const data = await response.json();
+
+        if (data?.result?.video) {
+          const videoUrl = data.result.video;
+          resultDiv.innerHTML = `
+            <p>Video TikTok:</p>
+            <video controls autoplay muted loop playsinline>
+              <source src="${videoUrl}" type="video/mp4"/>
+            </video>
+            <br/>
+            <a class="download-btn" href="${videoUrl}" target="_blank" download="tiktok.mp4">⬇️ Download Video</a>`;
+        } else {
+          resultDiv.innerHTML = "<p>Gagal mendapatkan video.</p>";
+        }
+      } catch (e) {
+        resultDiv.innerHTML = `<p>Error: ${e.message}</p>`;
+      }
+    };
+
+    // DeepSeek AI
+    window.askDeepSeek = async function () {
+      const input = document.getElementById("deepseek-input").value.trim();
+      const chatDiv = document.getElementById("deepseek-chat");
+      if (!input) return alert("Harap tulis pertanyaan!");
+
+      // tampilkan pertanyaan user
+      chatDiv.innerHTML += `<div class="bubble user">${input}</div>`;
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+
+      // loader sementara
+      const loaderId = "loader-" + Date.now();
+      chatDiv.innerHTML += `<div id="${loaderId}" class="bubble ai"><div class="loader"></div></div>`;
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+
+      try {
+        const endpoint = `https://izumiiiiiiii.dpdns.org/ai/deepseek?messages=${encodeURIComponent(input)}`;
+        const res = await fetch(endpoint);
+        const data = await res.json();
+
+        document.getElementById(loaderId).remove();
+
+        if (data?.status === true && data?.message) {
+          chatDiv.innerHTML += `<div class="bubble ai">${data.message}</div>`;
+        } else {
+          chatDiv.innerHTML += `<div class="bubble ai">Gagal mendapatkan jawaban.</div>`;
+        }
+      } catch (e) {
+        document.getElementById(loaderId).remove();
+        chatDiv.innerHTML += `<div class="bubble ai">Error: ${e.message}</div>`;
+      }
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+    };
+  </script>
+</body>
+</html>
