@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
@@ -242,6 +242,42 @@
       clear: both;
     }
 
+    /* Code block styling */
+    .code-block {
+      background: #111;
+      border: 1px solid #1e90ff55;
+      border-radius: 10px;
+      padding: 12px;
+      margin: 10px 0;
+      position: relative;
+      font-family: monospace;
+      white-space: pre-wrap;
+      overflow-x: auto;
+    }
+
+    .code-title {
+      font-weight: bold;
+      color: #1e90ff;
+      margin-bottom: 5px;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: #1e90ff;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      color: #000;
+      font-weight: bold;
+    }
+    .copy-btn:hover {
+      background: #00aaff;
+    }
+
     @media (max-width: 500px) {
       .container { margin: 80px 15px 40px; max-width: 100%; }
       .sidebar { width: 240px; }
@@ -396,6 +432,14 @@
       }
     };
 
+    // Fungsi copy text
+    function copyCode(codeId) {
+      const codeText = document.getElementById(codeId).innerText;
+      navigator.clipboard.writeText(codeText).then(() => {
+        alert("Kode berhasil disalin!");
+      });
+    }
+
     // DeepSeek AI
     window.askDeepSeek = async function () {
       const input = document.getElementById("deepseek-input").value.trim();
@@ -419,7 +463,34 @@
         document.getElementById(loaderId).remove();
 
         if (data?.status === true && data?.message) {
-          chatDiv.innerHTML += `<div class="bubble ai">${data.message}</div>`;
+          let msg = data.message;
+
+          // cek apakah ada kode dengan pola markdown ```language ... ```
+          const codeRegex = /```(\w+)\n([\s\S]*?)```/g;
+          let finalMsg = msg;
+          let match;
+          let i = 0;
+
+          while ((match = codeRegex.exec(msg)) !== null) {
+            i++;
+            const lang = match[1];
+            const code = match[2];
+            const codeId = `code-${Date.now()}-${i}`;
+
+            // ganti block markdown dengan versi styled
+            finalMsg = finalMsg.replace(
+              match[0],
+              `
+              <div class="code-title">${lang.toUpperCase()}</div>
+              <div class="code-block">
+                <button class="copy-btn" onclick="copyCode('${codeId}')">Copy</button>
+                <pre id="${codeId}">${code}</pre>
+              </div>
+              `
+            );
+          }
+
+          chatDiv.innerHTML += `<div class="bubble ai">${finalMsg}</div>`;
         } else {
           chatDiv.innerHTML += `<div class="bubble ai">Gagal mendapatkan jawaban.</div>`;
         }
@@ -431,4 +502,5 @@
     };
   </script>
 </body>
-</html>
+  </html>
+  
