@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
@@ -411,12 +411,12 @@
 
       resultDiv.innerHTML = '<div class="loader"></div><p>Mengunduh video TikTok...</p>';
       try {
-        const apiEndpoint = `https://api.siputzx.my.id/api/d/tiktok?url=${encodeURIComponent(url)}`;
+        const apiEndpoint = `https://izumiiiiiiii.dpdns.org/downloader/tiktok?url=${encodeURIComponent(url)}`;
         const response = await fetch(apiEndpoint);
         const data = await response.json();
 
-        if (data?.result?.video) {
-          const videoUrl = data.result.video;
+        if (data?.result?.hdplay) {
+          const videoUrl = data.result.hdplay;
           resultDiv.innerHTML = `
             <p>Video TikTok:</p>
             <video controls autoplay muted loop playsinline>
