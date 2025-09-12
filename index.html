@@ -404,41 +404,35 @@
     };
 
     // TikTok Downloader
-    window.downloadTiktok = async function () {
-      const url = document.getElementById("tiktok-url").value.trim();
-      const resultDiv = document.getElementById("result");
-      if (!url) return alert("Harap masukkan URL!");
+    // TikTok Downloader
+window.downloadTiktok = async function () {
+  const url = document.getElementById("tiktok-url").value.trim();
+  const resultDiv = document.getElementById("result");
+  if (!url) return alert("Harap masukkan URL!");
 
-      resultDiv.innerHTML = '<div class="loader"></div><p>Mengunduh video TikTok...</p>';
-      try {
-        const apiEndpoint = `https://izumiiiiiiii.dpdns.org/downloader/tiktok?url=${encodeURIComponent(url)}`;
-        const response = await fetch(apiEndpoint);
-        const data = await response.json();
+  resultDiv.innerHTML = '<div class="loader"></div><p>Mengunduh video TikTok...</p>';
+  try {
+    const apiEndpoint = `https://izumiiiiiiii.dpdns.org/downloader/tiktok?url=${encodeURIComponent(url)}`;
+    const response = await fetch(apiEndpoint);
+    const data = await response.json();
 
-        if (data?.result?.hdplay) {
-          const videoUrl = data.result.hdplay;
-          resultDiv.innerHTML = `
-            <p>Video TikTok:</p>
-            <video controls autoplay muted loop playsinline>
-              <source src="${videoUrl}" type="video/mp4"/>
-            </video>
-            <br/>
-            <a class="download-btn" href="${videoUrl}" target="_blank" download="tiktok.mp4">⬇️ Download Video</a>`;
-        } else {
-          resultDiv.innerHTML = "<p>Gagal mendapatkan video.</p>";
-        }
-      } catch (e) {
-        resultDiv.innerHTML = `<p>Error: ${e.message}</p>`;
-      }
-    };
-
-    // Fungsi copy text
-    function copyCode(codeId) {
-      const codeText = document.getElementById(codeId).innerText;
-      navigator.clipboard.writeText(codeText).then(() => {
-        alert("Kode berhasil disalin!");
-      });
+    if (data?.status === true && data?.result?.play) {
+      const videoUrl = data.result.play;
+      resultDiv.innerHTML = `
+        <p>Video TikTok:</p>
+        <video controls autoplay muted loop playsinline>
+          <source src="${videoUrl}" type="video/mp4"/>
+        </video>
+        <br/>
+        <a class="download-btn" href="${videoUrl}" target="_blank" download="tiktok.mp4">⬇️ Download Video</a>`;
+    } else {
+      resultDiv.innerHTML = "<p>Gagal mendapatkan video.</p>";
     }
+  } catch (e) {
+    resultDiv.innerHTML = `<p>Error: ${e.message}</p>`;
+  }
+};
+
 
     // DeepSeek AI
     window.askDeepSeek = async function () {
