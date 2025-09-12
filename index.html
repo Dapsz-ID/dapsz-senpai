@@ -428,26 +428,32 @@
     }
 
     async function generateQuoted() {
-      const user = document.getElementById("username").value.trim();
-      const text = document.getElementById("quote").value.trim();
-      const result = document.getElementById("quoted-result");
-      if (!user || !text) return alert("Isi semua input!");
+  const text = document.getElementById("quote").value.trim();
+  const result = document.getElementById("quoted-result");
+  if (!text) return alert("Isi teks dulu!");
 
-      result.innerHTML = '<div class="loader"></div>';
-      try {
-        const api = `https://itzpire.site/api/maker/iphonemessage?username=${encodeURIComponent(user)}&text=${encodeURIComponent(text)}`;
-        const res = await fetch(api);
-        const data = await res.json();
+  result.innerHTML = '<div class="loader"></div><p>Membuat quoted...</p>';
 
-        if (data.status && data.result?.url) {
-          result.innerHTML = `<img src="${data.result.url}" alt="Quoted"/>`;
-        } else {
-          result.innerHTML = "<p>Gagal membuat quoted.</p>";
-        }
-      } catch (e) {
-        result.innerHTML = `<p>Error: ${e.message}</p>`;
-      }
-    }
+  try {
+    const api = `https://brat.siputzx.my.id/iphone-quoted?time=11%3A26&messageText=${encodeURIComponent(text)}&carrierName=INDOSAT%20OOREDOO&batteryPercentage=88&signalStrength=4&emojiStyle=apple`;
+
+    const res = await fetch(api);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const blob = await res.blob();
+    const imgUrl = URL.createObjectURL(blob);
+
+    result.innerHTML = `
+      <div class="media-container">
+        <img src="${imgUrl}" alt="Quoted"/>
+      </div>
+      <a class="download-btn" href="${imgUrl}" target="_blank" download="quoted.png">⬇️ Download</a>
+    `;
+  } catch (e) {
+    result.innerHTML = `<p>Gagal membuat quoted: ${e.message}</p>`;
+    console.error(e);
+  }
+}
   </script>
 </body>
 </html>
