@@ -87,17 +87,6 @@
       min-height: 120px;
       text-align: left;
       white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-
-    /* ✅ Fix responsif untuk gambar & video */
-    .result img,
-    .result video {
-      max-width: 100%;
-      height: auto;
-      border-radius: 12px;
-      display: block;
-      margin: 10px auto;
     }
 
     .loader {
@@ -299,161 +288,225 @@
   <header>
     <h1>Dapsz Senpai</h1>
   </header>
-  <div class="hamburger" onclick="toggleSidebar(this)">
-    <span></span><span></span><span></span>
+
+  <div class="hamburger" id="hamburger" role="button" tabindex="0">
+    <span></span>
+    <span></span>
+    <span></span>
   </div>
-  <div class="sidebar" id="sidebar">
+
+  <nav class="sidebar" id="sidebar">
     <h2>Menu</h2>
-    <button class="menu-item" onclick="showSection('ai')">🤖 DeepSeek-AI</button>
-    <button class="menu-item" onclick="showSection('tiktok')">🎵 TikTok Downloader</button>
-    <button class="menu-item" onclick="showSection('quoted')">💬 iPhone Quoted Generator</button>
-  </div>
+    <button class="menu-item active" id="menu-welcome">Beranda</button>
+    <button class="menu-item" id="menu-generator">iPhone Quoted Generator</button>
+    <button class="menu-item" id="menu-tiktok">TikTok Downloader</button>
+    <button class="menu-item" id="menu-deepseek">DeepSeek-AI</button>
+  </nav>
 
-  <!-- DeepSeek AI -->
-  <div class="container" id="ai">
-    <h2>DeepSeek-AI</h2>
-    <textarea id="prompt" placeholder="Tanyakan sesuatu..."></textarea>
-    <button onclick="askAI()">Kirim</button>
-    <div class="chat-container" id="chat"></div>
-  </div>
-
-  <!-- TikTok Downloader -->
-  <div class="container" id="tiktok" style="display:none">
-    <h2>TikTok Downloader</h2>
-    <input id="tiktok-url" placeholder="Tempel URL TikTok" />
-    <button onclick="downloadTiktok()">Download</button>
-    <div class="result" id="tiktok-result"></div>
-  </div>
-
-  <!-- Quoted Generator -->
-  <div class="container" id="quoted" style="display:none">
-    <h2>iPhone Quoted Generator</h2>
-    <input id="username" placeholder="Nama user" />
-    <textarea id="quote" placeholder="Tulis pesan..."></textarea>
-    <button onclick="generateQuoted()">Buat Quoted</button>
-    <div class="result" id="quoted-result"></div>
-  </div>
+  <main>
+    <div class="container" id="content"></div>
+  </main>
 
   <script>
-    function toggleSidebar(el) {
-      el.classList.toggle("active");
-      document.getElementById("sidebar").classList.toggle("open");
+    const hamburger = document.getElementById("hamburger");
+    const sidebar = document.getElementById("sidebar");
+    const content = document.getElementById("content");
+    const menuWelcome = document.getElementById("menu-welcome");
+    const menuGenerator = document.getElementById("menu-generator");
+    const menuTiktok = document.getElementById("menu-tiktok");
+    const menuDeepSeek = document.getElementById("menu-deepseek");
+
+    function toggleSidebar() {
+      const isOpen = sidebar.classList.toggle("open");
+      hamburger.classList.toggle("active", isOpen);
     }
-    function showSection(id) {
-      document.querySelectorAll(".container").forEach(c => c.style.display = "none");
-      document.getElementById(id).style.display = "block";
-      document.querySelectorAll(".sidebar button").forEach(b => b.classList.remove("active"));
-      event.target.classList.add("active");
-      toggleSidebar(document.querySelector(".hamburger"));
-    }
+    hamburger.addEventListener("click", toggleSidebar);
 
-    async function askAI() {
-      const input = document.getElementById("prompt").value.trim();
-      if (!input) return;
-      const chat = document.getElementById("chat");
-      chat.innerHTML += `<div class="bubble user">${input}</div>`;
-      chat.scrollTop = chat.scrollHeight;
-
-      chat.innerHTML += '<div class="loader" id="ai-loader"></div>';
-
-      try {
-        const res = await fetch("https://itzpire.site/api/search/deepseek?q=" + encodeURIComponent(input));
-        const data = await res.json();
-        document.getElementById("ai-loader").remove();
-
-        if (data.status && data.message) {
-          const text = data.message;
-          const parts = text.split(/```(.*?)```/gs);
-          let formatted = "";
-          parts.forEach((p, i) => {
-            if (i % 2 === 0) {
-              if (p.trim()) formatted += `<div class="bubble ai">${p.trim()}</div>`;
-            } else {
-              formatted += `
-                <div class="code-block">
-                  <div class="code-title">Kode</div>
-                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                  <pre>${p.trim()}</pre>
-                </div>`;
-            }
-          });
-          chat.innerHTML += formatted;
-        } else {
-          chat.innerHTML += `<div class="bubble ai">Gagal: ${data.message || "Error"}</div>`;
-        }
-      } catch (e) {
-        document.getElementById("ai-loader").remove();
-        chat.innerHTML += `<div class="bubble ai">Error: ${e.message}</div>`;
-      }
-      chat.scrollTop = chat.scrollHeight;
-    }
-    function copyCode(btn) {
-      const code = btn.nextElementSibling.innerText;
-      navigator.clipboard.writeText(code);
-      btn.innerText = "Copied!";
-      setTimeout(() => btn.innerText = "Copy", 1500);
+    function clearActiveMenu() {
+      document.querySelectorAll(".menu-item").forEach(btn => btn.classList.remove("active"));
     }
 
-    async function downloadTiktok() {
-      const url = document.getElementById("tiktok-url").value.trim();
-      const result = document.getElementById("tiktok-result");
-      if (!url) return alert("Harap masukkan URL!");
-
-      result.innerHTML = '<div class="loader"></div>';
-      try {
-        const api = "https://izumiiiiiiii.dpdns.org/downloader/tiktok?url=" + encodeURIComponent(url);
-        const res = await fetch(api);
-        const data = await res.json();
-
-        if (data.status && data.result) {
-          const videoUrl = data.result.hdplay || data.result.play || data.result.wmplay;
-          if (videoUrl) {
-            result.innerHTML = `
-              <p><strong>${data.result.title || "Video TikTok"}</strong></p>
-              <video controls autoplay muted loop playsinline>
-                <source src="${videoUrl}" type="video/mp4" />
-              </video>
-              <a href="${videoUrl}" target="_blank" download="tiktok.mp4">
-                ⬇️ Download Video
-              </a>`;
-          } else {
-            result.innerHTML = "<p>Tidak ditemukan link video.</p>";
-          }
-        } else {
-          result.innerHTML = "<p>Gagal mendapatkan video.</p>";
-        }
-      } catch (e) {
-        result.innerHTML = `<p>Error: ${e.message}</p>`;
-      }
+    function renderWelcome() {
+      content.innerHTML = `
+        <p style="font-size:1.2rem; line-height:1.5; user-select:none;">
+          Selamat Datang Di Website Dapsz Senpai,<br/>
+          Silahkan klik garis tiga di kanan atas untuk info lebih lanjut
+        </p>`;
     }
 
-    async function generateQuoted() {
-  const text = document.getElementById("quote").value.trim();
-  const result = document.getElementById("quoted-result");
-  if (!text) return alert("Isi teks dulu!");
+    function renderGenerator() {
+      content.innerHTML = `
+        <input type="text" id="message" placeholder="Isi Kata Kata"/>
+        <button onclick="generateImage()">Send</button>
+        <div class="result" id="result"></div>`;
+    }
 
-  result.innerHTML = '<div class="loader"></div><p>Membuat quoted...</p>';
+    function renderTiktokDownloader() {
+      content.innerHTML = `
+        <input type="url" id="tiktok-url" placeholder="Masukkan URL TikTok"/>
+        <button onclick="downloadTiktok()">Download</button>
+        <div class="result" id="result"></div>`;
+    }
 
+    function renderDeepSeek() {
+      content.innerHTML = `
+        <textarea id="deepseek-input" placeholder="Tulis pertanyaan atau perintah untuk AI..."></textarea>
+        <button onclick="askDeepSeek()">Kirim</button>
+        <div class="chat-container" id="deepseek-chat"></div>`;
+    }
+
+    menuWelcome.addEventListener("click", () => {
+      clearActiveMenu();
+      menuWelcome.classList.add("active");
+      renderWelcome();
+      toggleSidebar();
+    });
+
+    menuGenerator.addEventListener("click", () => {
+      clearActiveMenu();
+      menuGenerator.classList.add("active");
+      renderGenerator();
+      toggleSidebar();
+    });
+
+    menuTiktok.addEventListener("click", () => {
+      clearActiveMenu();
+      menuTiktok.classList.add("active");
+      renderTiktokDownloader();
+      toggleSidebar();
+    });
+
+    menuDeepSeek.addEventListener("click", () => {
+      clearActiveMenu();
+      menuDeepSeek.classList.add("active");
+      renderDeepSeek();
+      toggleSidebar();
+    });
+
+    renderWelcome();
+
+    // iPhone Quoted Generator
+    window.generateImage = function () {
+      const message = document.getElementById("message").value.trim();
+      const resultDiv = document.getElementById("result");
+      if (!message) return alert("Harap masukkan teks!");
+
+      resultDiv.innerHTML = '<div class="loader"></div><p>Sedang memproses...</p>';
+      const apiUrl = `https://brat.siputzx.my.id/iphone-quoted?time=11%3A26&messageText=${encodeURIComponent(message)}&carrierName=INDOSAT%20OOREDOO&batteryPercentage=88&signalStrength=4&emojiStyle=apple`;
+
+      setTimeout(() => {
+        resultDiv.innerHTML = `
+          <p>Hasil:</p>
+          <img src="${apiUrl}" alt="hasil"/>
+          <br/>
+          <a class="download-btn" href="${apiUrl}" target="_blank" download>⬇️ Download</a>`;
+      }, 800);
+    };
+
+    // TikTok Downloader
+window.downloadTiktok = async function () {
+  const url = document.getElementById("tiktok-url").value.trim();
+  const resultDiv = document.getElementById("result");
+  if (!url) return alert("Harap masukkan URL!");
+
+  resultDiv.innerHTML = '<div class="loader"></div><p>Mengunduh video TikTok...</p>';
   try {
-    const api = `https://brat.siputzx.my.id/iphone-quoted?time=11%3A26&messageText=${encodeURIComponent(text)}&carrierName=INDOSAT%20OOREDOO&batteryPercentage=88&signalStrength=4&emojiStyle=apple`;
+    const apiEndpoint = `https://izumiiiiiiii.dpdns.org/downloader/tiktok?url=${encodeURIComponent(url)}`;
+    const response = await fetch(apiEndpoint);
+    const data = await response.json();
 
-    const res = await fetch(api);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    if (data?.status === true && data?.result) {
+      const videoUrl = data.result.hdplay || data.result.play || data.result.wmplay;
 
-    const blob = await res.blob();
-    const imgUrl = URL.createObjectURL(blob);
-
-    result.innerHTML = `
-      <div class="media-container">
-        <img src="${imgUrl}" alt="Quoted"/>
-      </div>
-      <a class="download-btn" href="${imgUrl}" target="_blank" download="quoted.png">⬇️ Download</a>
-    `;
+      if (videoUrl) {
+        resultDiv.innerHTML = `
+          <p><strong>${data.result.title || "Video TikTok"}</strong></p>
+          <video controls autoplay muted loop playsinline width="100%">
+            <source src="${videoUrl}" type="video/mp4"/>
+          </video>
+          <br/>
+          <a class="download-btn" href="${videoUrl}" target="_blank" download="tiktok.mp4">⬇️ Download Video</a>`;
+      } else {
+        resultDiv.innerHTML = "<p>Tidak ditemukan link video dalam respon API.</p>";
+      }
+    } else {
+      resultDiv.innerHTML = `<p>Gagal mendapatkan video: ${data?.message || "Unknown error"}</p>`;
+    }
   } catch (e) {
-    result.innerHTML = `<p>Gagal membuat quoted: ${e.message}</p>`;
-    console.error(e);
+    resultDiv.innerHTML = `<p>Error: ${e.message}</p>`;
   }
-}
+};
+
+
+    // Fungsi copy text
+    function copyCode(codeId) {
+      const codeText = document.getElementById(codeId).innerText;
+      navigator.clipboard.writeText(codeText).then(() => {
+        alert("Kode berhasil disalin!");
+      });
+    }
+
+    // DeepSeek AI
+    window.askDeepSeek = async function () {
+      const input = document.getElementById("deepseek-input").value.trim();
+      const chatDiv = document.getElementById("deepseek-chat");
+      if (!input) return alert("Harap tulis pertanyaan!");
+
+      // tampilkan pertanyaan user
+      chatDiv.innerHTML += `<div class="bubble user">${input}</div>`;
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+
+      // loader sementara
+      const loaderId = "loader-" + Date.now();
+      chatDiv.innerHTML += `<div id="${loaderId}" class="bubble ai"><div class="loader"></div></div>`;
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+
+      try {
+        const endpoint = `https://izumiiiiiiii.dpdns.org/ai/deepseek?messages=${encodeURIComponent(input)}`;
+        const res = await fetch(endpoint);
+        const data = await res.json();
+
+        document.getElementById(loaderId).remove();
+
+        if (data?.status === true && data?.message) {
+          let msg = data.message;
+
+          // cek apakah ada kode dengan pola markdown ```language ... ```
+          const codeRegex = /```(\w+)\n([\s\S]*?)```/g;
+          let finalMsg = msg;
+          let match;
+          let i = 0;
+
+          while ((match = codeRegex.exec(msg)) !== null) {
+            i++;
+            const lang = match[1];
+            const code = match[2];
+            const codeId = `code-${Date.now()}-${i}`;
+
+            // ganti block markdown dengan versi styled
+            finalMsg = finalMsg.replace(
+              match[0],
+              `
+              <div class="code-title">${lang.toUpperCase()}</div>
+              <div class="code-block">
+                <button class="copy-btn" onclick="copyCode('${codeId}')">Copy</button>
+                <pre id="${codeId}">${code}</pre>
+              </div>
+              `
+            );
+          }
+
+          chatDiv.innerHTML += `<div class="bubble ai">${finalMsg}</div>`;
+        } else {
+          chatDiv.innerHTML += `<div class="bubble ai">Gagal mendapatkan jawaban.</div>`;
+        }
+      } catch (e) {
+        document.getElementById(loaderId).remove();
+        chatDiv.innerHTML += `<div class="bubble ai">Error: ${e.message}</div>`;
+      }
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+    };
   </script>
 </body>
-</html>
+  </html>
+  
