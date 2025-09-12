@@ -1,134 +1,26 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dapsz Senpai</title>
   <style>
+    /* ---- base ---- */
+    :root{
+      --bg:#000;
+      --card:rgba(25,25,25,0.95);
+      --blue1:#1e90ff;
+      --blue2:#00aaff;
+      --muted:#999;
+    }
+    *{box-sizing:border-box}
     body {
-      background: #000;
+      background: var(--bg);
       color: #eee;
       font-family: "Poppins", Arial, sans-serif;
       margin: 0;
       min-height: 100vh;
       overflow-x: hidden;
-    }
-
-    h1 {
-      font-size: 2.3rem;
-      margin-bottom: 20px;
-      background: linear-gradient(90deg, #1e90ff, #00aaff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 15px #0077ff;
-    }
-
-    .container {
-      background: rgba(25, 25, 25, 0.95);
-      padding: 25px;
-      border-radius: 20px;
-      box-shadow: 0 0 25px rgba(0,119,255,0.3);
-      width: 100%;
-      max-width: 480px;
-      text-align: center;
-      backdrop-filter: blur(10px);
-      margin: 80px auto 40px;
-      box-sizing: border-box;
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border-radius: 10px;
-      border: 2px solid #1e90ff;
-      outline: none;
-      font-size: 1rem;
-      background: #111;
-      color: #eee;
-      transition: 0.3s;
-      box-sizing: border-box;
-    }
-
-    textarea {
-      min-height: 100px;
-      resize: vertical;
-    }
-
-    input:focus, textarea:focus {
-      border-color: #00aaff;
-      box-shadow: 0 0 12px #00aaff88;
-    }
-
-    button {
-      background: linear-gradient(90deg, #1e90ff, #00aaff);
-      border: none;
-      padding: 12px 25px;
-      border-radius: 50px;
-      cursor: pointer;
-      font-size: 1rem;
-      color: #111;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      margin: 0 auto;
-      transition: transform 0.2s, box-shadow 0.3s;
-    }
-
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 18px #1e90ff66;
-    }
-
-    .result {
-      margin-top: 20px;
-      min-height: 120px;
-      text-align: left;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-
-    /* tombol download style */
-    .download-btn {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 10px 18px;
-      background: linear-gradient(90deg,#00aaff,#1e90ff);
-      color: #fff;
-      border-radius: 10px;
-      text-decoration: none;
-      font-weight: 700;
-    }
-
-    .download-btn:hover { opacity: 0.95; }
-
-    /* gambar & video responsif */
-    .result img,
-    .result video {
-      max-width: 95%;
-      width: 95%;
-      height: auto;
-      border-radius: 12px;
-      display: inline-block;
-      margin: 10px auto;
-      object-fit: contain;
-    }
-
-    .loader {
-      border: 4px solid #333;
-      border-top: 4px solid #1e90ff;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-      margin: 20px auto;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
     }
 
     header {
@@ -137,177 +29,174 @@
       left: 0;
       width: 100%;
       height: 60px;
-      background: rgba(25, 25, 25, 0.95);
-      backdrop-filter: blur(10px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.7);
-      z-index: 1001;
+      background: rgba(15,15,15,0.98);
+      backdrop-filter: blur(8px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:1001;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+    }
+    header h1{
+      margin:0;
+      font-size:1.6rem;
+      color: transparent;
+      background: linear-gradient(90deg,var(--blue1),var(--blue2));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 12px rgba(30,144,255,0.12);
+      user-select:none;
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 1.8rem;
-      user-select: none;
-    }
-
+    /* hamburger */
     .hamburger {
       position: fixed;
-      top: 15px;
-      right: 20px;
-      width: 30px;
-      height: 22px;
-      cursor: pointer;
-      z-index: 1100;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      top: 14px;
+      right: 18px;
+      width: 36px;
+      height: 26px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      z-index:1100;
+      cursor:pointer;
     }
-
-    .hamburger span {
-      display: block;
-      height: 4px;
-      background: #1e90ff;
-      border-radius: 2px;
-      transition: all 0.3s ease;
+    .hamburger span{
+      display:block;height:4px;border-radius:4px;background:var(--blue1);
+      transition: all .25s ease;
     }
+    .hamburger.active span:nth-child(1){transform: rotate(45deg) translate(6px,6px)}
+    .hamburger.active span:nth-child(2){opacity:0}
+    .hamburger.active span:nth-child(3){transform: rotate(-45deg) translate(6px,-6px)}
 
-    .hamburger.active span:nth-child(1) {
-      transform: rotate(45deg) translate(5px, 5px);
-    }
-
-    .hamburger.active span:nth-child(2) {
-      opacity: 0;
-    }
-
-    .hamburger.active span:nth-child(3) {
-      transform: rotate(-45deg) translate(5px, -5px);
-    }
-
-    .sidebar {
+    /* sidebar */
+    .sidebar{
       position: fixed;
       top: 0;
       right: -320px;
       width: 320px;
       height: 100vh;
-      background: rgba(15, 15, 15, 0.98);
-      box-shadow: -2px 0 15px rgba(0,119,255,0.5);
-      backdrop-filter: blur(15px);
-      padding: 60px 20px 20px;
-      box-sizing: border-box;
-      transition: right 0.3s ease;
-      z-index: 1050;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+      background: rgba(10,10,10,0.98);
+      padding: 70px 16px 20px;
+      transition: right .25s ease;
+      z-index:1050;
+      box-shadow: -3px 0 20px rgba(0,0,0,0.6);
+      display:flex;
+      flex-direction:column;
+      gap:10px;
     }
+    .sidebar.open{right:0}
+    .sidebar h2{color:var(--blue1); margin:0 0 6px 0; font-weight:700}
+    .menu-item{background:none;border:none;color:var(--blue2);text-align:left;padding:10px;border-radius:8px;cursor:pointer;font-size:1rem}
+    .menu-item.active, .menu-item:hover{background: rgba(30,144,255,0.12); color: var(--blue1); font-weight:700}
 
-    .sidebar.open { right: 0; }
-
-    .sidebar h2 {
-      color: #1e90ff;
-      margin: 0 0 15px 0;
-      font-weight: 700;
-      user-select: none;
-    }
-
-    .sidebar button.menu-item {
-      background: none;
-      border: none;
-      color: #00aaff;
-      font-size: 1.1rem;
-      text-align: left;
-      padding: 10px 15px;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background 0.2s;
-      user-select: none;
-    }
-
-    .sidebar button.menu-item:hover,
-    .sidebar button.menu-item.active {
-      background: #1e90ff22;
-      color: #1e90ff;
-      font-weight: 700;
-    }
-
-    /* Chat bubble */
-    .chat-container {
-      max-height: 400px;
-      overflow-y: auto;
-      text-align: left;
-      padding: 10px;
-      border-radius: 12px;
-      background: rgba(20,20,20,0.6);
-      margin-top: 15px;
-    }
-
-    .bubble {
-      display: inline-block;
-      padding: 10px 14px;
+    /* container */
+    main{padding:80px 16px 30px}
+    .container{
+      background: var(--card);
+      padding: 20px;
       border-radius: 16px;
-      margin: 6px 0;
-      max-width: 80%;
-      line-height: 1.4;
-      word-wrap: break-word;
+      max-width: 560px;
+      margin: 0 auto 24px;
+      box-shadow: 0 8px 40px rgba(0,119,255,0.06);
+    }
+    .container h2{margin:0 0 10px 0; font-size:1.1rem; color:#fff}
+
+    input, textarea, select, button {
+      font-family: inherit;
+      font-size: 1rem;
+    }
+    input, textarea {
+      width:100%;
+      padding:10px 12px;
+      border-radius:10px;
+      border:2px solid var(--blue1);
+      background:#111;color:#eee;
+      outline:none;margin-bottom:12px;
+    }
+    textarea{min-height:100px; resize:vertical}
+    input:focus, textarea:focus{box-shadow:0 0 12px rgba(0,170,255,0.12); border-color:var(--blue2)}
+
+    button.primary{
+      background: linear-gradient(90deg,var(--blue1),var(--blue2));
+      color:#07111a;
+      border:none;
+      padding:10px 16px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:700;
+    }
+    button.primary:hover{transform:translateY(-1px)}
+
+    .result{
+      margin-top:12px;
+      min-height:60px;
+      text-align:center;
+      word-wrap:break-word;
+      overflow:hidden;
     }
 
-    .bubble.user {
-      background: #1e90ff;
-      color: #fff;
-      border-bottom-right-radius: 4px;
-      float: right;
-      clear: both;
+    /* download button style */
+    a.download-btn, .download-btn {
+      display:inline-block;
+      background: linear-gradient(90deg,#00aaff,#1e90ff);
+      color:white;
+      padding:10px 16px;
+      border-radius:10px;
+      text-decoration:none;
+      font-weight:700;
+      margin-top:10px;
+    }
+    a.download-btn:hover{opacity:0.95}
+
+    /* image/video responsive and bounded inside result */
+    .result .media-wrap{
+      max-width: 100%;
+      width: 100%;
+      overflow: hidden;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+    .result img, .result video {
+      max-width: 95%;
+      width: 95%;
+      height: auto;
+      border-radius:12px;
+      display:inline-block;
+      margin:10px auto;
+      object-fit:contain;
     }
 
-    .bubble.ai {
-      background: #333;
-      color: #eee;
-      border-bottom-left-radius: 4px;
-      float: left;
-      clear: both;
+    /* chat bubbles */
+    .chat-container{
+      max-height:320px;
+      overflow-y:auto;
+      padding:10px;
+      background: rgba(0,0,0,0.2);
+      border-radius:10px;
+      text-align:left;
+      margin-top:12px;
     }
+    .bubble{display:inline-block;padding:8px 12px;border-radius:12px;margin:6px 0;max-width:80%;white-space:pre-wrap}
+    .bubble.user{background:var(--blue1); color:#fff; float:right; clear:both; border-bottom-right-radius:4px}
+    .bubble.ai{background:#222;color:#eee; float:left; clear:both; border-bottom-left-radius:4px}
 
-    /* Code block styling */
-    .code-block {
-      background: #111;
-      border: 1px solid #1e90ff55;
-      border-radius: 10px;
-      padding: 12px;
-      margin: 10px 0;
-      position: relative;
-      font-family: monospace;
-      white-space: pre-wrap;
-      overflow-x: auto;
-    }
+    /* code block style */
+    .code-block{background:#0b0b0b;border:1px solid rgba(30,144,255,0.12);padding:10px;border-radius:8px;position:relative;overflow:auto;font-family:monospace;margin-top:8px}
+    .code-title{color:var(--blue1);font-weight:700;margin-bottom:6px}
+    .copy-btn{position:absolute;right:8px;top:8px;background:var(--blue1);color:#000;padding:4px 8px;border-radius:6px;border:none;font-weight:700;cursor:pointer}
 
-    .code-title {
-      font-weight: bold;
-      color: #1e90ff;
-      margin-bottom: 5px;
-    }
+    /* loader */
+    .loader{border:4px solid #222;border-top:4px solid var(--blue1);width:36px;height:36px;border-radius:50%;animation:spin 1s linear infinite;margin:14px auto}
+    @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
 
-    .copy-btn {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: #1e90ff;
-      border: none;
-      padding: 4px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      color: #000;
-      font-weight: bold;
-    }
-    .copy-btn:hover {
-      background: #00aaff;
-    }
-
-    @media (max-width: 500px) {
-      .container { margin: 80px 15px 40px; max-width: 100%; }
-      .sidebar { width: 240px; right: -240px; }
+    /* responsive tweaks */
+    @media (max-width:540px){
+      .sidebar{width:260px; right:-260px}
+      .container{margin:80px 12px 24px; padding:16px; border-radius:12px}
+      header h1{font-size:1.3rem}
+      .chat-container{max-height:260px}
     }
   </style>
 </head>
@@ -316,7 +205,7 @@
     <h1>Dapsz Senpai</h1>
   </header>
 
-  <div class="hamburger" id="hamburger" role="button" tabindex="0" aria-label="Toggle menu">
+  <div class="hamburger" id="hamburger" role="button" aria-label="Toggle menu" tabindex="0">
     <span></span><span></span><span></span>
   </div>
 
@@ -334,142 +223,147 @@
   </main>
 
   <script>
-    // --- basic UI & menu ---
-    const hamburger = document.getElementById("hamburger");
-    const sidebar = document.getElementById("sidebar");
-    const content = document.getElementById("content");
-    const menuWelcome = document.getElementById("menu-welcome");
-    const menuGenerator = document.getElementById("menu-generator");
-    const menuTiktok = document.getElementById("menu-tiktok");
-    const menuDeepSeek = document.getElementById("menu-deepseek");
-    const menuFakeCall = document.getElementById("menu-fakecall");
+    /* ---- UI wiring ---- */
+    const hamburger = document.getElementById('hamburger');
+    const sidebar = document.getElementById('sidebar');
+    const content = document.getElementById('content');
+    const menuWelcome = document.getElementById('menu-welcome');
+    const menuGenerator = document.getElementById('menu-generator');
+    const menuTiktok = document.getElementById('menu-tiktok');
+    const menuDeepSeek = document.getElementById('menu-deepseek');
+    const menuFakeCall = document.getElementById('menu-fakecall');
 
     function toggleSidebar() {
-      const isOpen = sidebar.classList.toggle("open");
-      hamburger.classList.toggle("active", isOpen);
-      sidebar.setAttribute("aria-hidden", !isOpen);
+      const open = sidebar.classList.toggle('open');
+      hamburger.classList.toggle('active', open);
+      sidebar.setAttribute('aria-hidden', !open);
     }
-    hamburger.addEventListener("click", toggleSidebar);
-    hamburger.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        toggleSidebar();
-      }
+    hamburger.addEventListener('click', toggleSidebar);
+    hamburger.addEventListener('keydown', (e) => {
+      if(e.key==='Enter' || e.key===' ') { e.preventDefault(); toggleSidebar(); }
     });
 
-    function clearActiveMenu() {
-      document.querySelectorAll(".menu-item").forEach(btn=>btn.classList.remove("active"));
+    function clearActive() {
+      document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('active'));
     }
 
-    function renderWelcome() {
-      content.innerHTML = `
-        <p style="font-size: 1.2rem; line-height: 1.5; user-select:none;">
-          Selamat Datang Di Website Dapsz Senpai,<br />
-          Silahkan klik garis tiga di kanan atas untuk info lebih lanjut
-        </p>
-      `;
+    function showSection(id) {
+      clearActive();
+      document.getElementById(`menu-${id}`)?.classList.add('active');
+      // render corresponding
+      switch(id){
+        case 'welcome': renderWelcome(); break;
+        case 'generator': renderGenerator(); break;
+        case 'tiktok': renderTiktok(); break;
+        case 'deepseek': renderDeepSeek(); break;
+        case 'fakecall': renderFakeCall(); break;
+        default: renderWelcome();
+      }
+      // close sidebar on mobile
+      if(sidebar.classList.contains('open')) toggleSidebar();
     }
 
-    function renderGenerator() {
-      content.innerHTML = `
-        <input type="text" id="message" placeholder="Isi Kata Kata" aria-label="Isi Kata Kata" />
-        <button onclick="generateImage()" aria-label="Send">Send</button>
-        <div class="result" id="result" aria-live="polite"></div>
-      `;
-    }
-
-    function renderTiktokDownloader() {
-      content.innerHTML = `
-        <input type="url" id="tiktok-url" placeholder="Masukkan URL TikTok" aria-label="Masukkan URL TikTok" />
-        <button onclick="downloadTiktok()" aria-label="Download TikTok">Download</button>
-        <div class="result" id="result" aria-live="polite"></div>
-      `;
-    }
-
-    function renderDeepSeek() {
-      content.innerHTML = `
-        <textarea id="deepseek-input" placeholder="Tulis pertanyaan atau perintah untuk AI..."></textarea>
-        <button onclick="askDeepSeek()">Kirim</button>
-        <div class="chat-container" id="deepseek-chat"></div>`;
-    }
-
-    function renderFakeCall() {
-      content.innerHTML = `
-        <label for="fc-nama" style="display:block;text-align:left;margin-bottom:6px">Nama pemanggil</label>
-        <input id="fc-nama" placeholder="Contoh: Ayu, Budi" aria-label="Nama pemanggil" />
-        <label for="fc-durasi" style="display:block;text-align:left;margin-bottom:6px">Durasi (detik)</label>
-        <input id="fc-durasi" type="number" placeholder="Contoh: 30" aria-label="Durasi (detik)" />
-        <label for="fc-avatar" style="display:block;text-align:left;margin-bottom:6px">Avatar (URL gambar)</label>
-        <input id="fc-avatar" placeholder="https://..." aria-label="Avatar URL" />
-        <button onclick="generateFakeCall()">Buat Fake Call</button>
-        <div class="result" id="fakecall-result" aria-live="polite"></div>
-      `;
-    }
-
-    // menu handlers
-    menuWelcome.addEventListener("click", ()=>{ clearActiveMenu(); menuWelcome.classList.add("active"); renderWelcome(); toggleSidebar(); });
-    menuGenerator.addEventListener("click", ()=>{ clearActiveMenu(); menuGenerator.classList.add("active"); renderGenerator(); toggleSidebar(); });
-    menuTiktok.addEventListener("click", ()=>{ clearActiveMenu(); menuTiktok.classList.add("active"); renderTiktokDownloader(); toggleSidebar(); });
-    menuDeepSeek.addEventListener("click", ()=>{ clearActiveMenu(); menuDeepSeek.classList.add("active"); renderDeepSeek(); toggleSidebar(); });
-    menuFakeCall.addEventListener("click", ()=>{ clearActiveMenu(); menuFakeCall.classList.add("active"); renderFakeCall(); toggleSidebar(); });
+    menuWelcome.addEventListener('click', ()=> showSection('welcome'));
+    menuGenerator.addEventListener('click', ()=> showSection('generator'));
+    menuTiktok.addEventListener('click', ()=> showSection('tiktok'));
+    menuDeepSeek.addEventListener('click', ()=> showSection('deepseek'));
+    menuFakeCall.addEventListener('click', ()=> showSection('fakecall'));
 
     // initial
+    function renderWelcome(){
+      content.innerHTML = `<div class="container"><p style="font-size:1.05rem; line-height:1.5; user-select:none;">Selamat Datang Di Website Dapsz Senpai,<br/>Pilih menu untuk mencoba fitur.</p></div>`;
+    }
     renderWelcome();
 
-    // ---------------- existing functions ----------------
+    /* ---- Renderers ---- */
+    function renderGenerator(){
+      content.innerHTML = `
+        <div class="container">
+          <h2>iPhone Quoted Generator</h2>
+          <input id="message" placeholder="Isi Kata Kata" aria-label="Isi Kata Kata" />
+          <button class="primary" onclick="generateImage()">Buat Quoted</button>
+          <div class="result" id="result" aria-live="polite"></div>
+        </div>`;
+    }
 
-    // iPhone Quoted Generator (brat.siputzx.my.id)
-    window.generateImage = function () {
-      const messageInput = document.getElementById("message");
-      const resultDiv = document.getElementById("result");
+    function renderTiktok(){
+      content.innerHTML = `
+        <div class="container">
+          <h2>TikTok Downloader</h2>
+          <input id="tiktok-url" type="url" placeholder="Masukkan URL TikTok" aria-label="Masukkan URL TikTok" />
+          <button class="primary" onclick="downloadTiktok()">Download</button>
+          <div class="result" id="result" aria-live="polite"></div>
+        </div>`;
+    }
 
-      if (!messageInput) return;
-      const message = messageInput.value.trim();
-      if (!message) {
-        alert("Harap masukkan teks terlebih dahulu!");
-        return;
-      }
+    function renderDeepSeek(){
+      content.innerHTML = `
+        <div class="container">
+          <h2>DeepSeek-AI</h2>
+          <textarea id="deepseek-input" placeholder="Tulis pertanyaan atau perintah untuk AI..."></textarea>
+          <button class="primary" onclick="askDeepSeek()">Kirim</button>
+          <div class="chat-container" id="deepseek-chat" aria-live="polite"></div>
+        </div>`;
+    }
 
-      resultDiv.innerHTML = '<div class="loader" role="status" aria-label="Loading"></div><p>Sedang memproses...</p>';
+    function renderFakeCall(){
+      content.innerHTML = `
+        <div class="container">
+          <h2>Fake Call WhatsApp</h2>
+          <label style="display:block;text-align:left;margin-bottom:6px">Nama pemanggil</label>
+          <input id="fc-nama" placeholder="Contoh: Ayu, Budi" aria-label="Nama pemanggil" />
+          <label style="display:block;text-align:left;margin-bottom:6px">Durasi (detik)</label>
+          <input id="fc-durasi" type="number" placeholder="Contoh: 30" aria-label="Durasi (detik)" />
+          <label style="display:block;text-align:left;margin-bottom:6px">Avatar (URL gambar, optional)</label>
+          <input id="fc-avatar" placeholder="https://..." aria-label="Avatar URL" />
+          <button class="primary" onclick="generateFakeCall()">Buat Fake Call</button>
+          <div class="result" id="fakecall-result" aria-live="polite"></div>
+        </div>`;
+    }
+
+    /* ---- Utilities ---- */
+    function escapeHtml(s=''){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+    /* ---- iPhone Quoted Generator (brat.siputzx.my.id) ---- */
+    window.generateImage = function(){
+      const message = document.getElementById('message')?.value?.trim();
+      const resultDiv = document.getElementById('result');
+      if(!message){ alert('Harap masukkan teks!'); return; }
+      resultDiv.innerHTML = '<div class="loader" role="status" aria-label="Loading"></div><p>Memproses...</p>';
 
       const apiUrl = `https://brat.siputzx.my.id/iphone-quoted?time=11%3A26&messageText=${encodeURIComponent(message)}&carrierName=INDOSAT%20OOREDOO&batteryPercentage=88&signalStrength=4&emojiStyle=apple`;
 
-      // buat elemen image dengan handling load/error
-      setTimeout(() => {
-        // tampilkan image responsif dan tombol download styled
+      // show image element that loads from URL (CORS: image src is fine)
+      setTimeout(()=>{
         resultDiv.innerHTML = `
-          <p>Hasil:</p>
-          <div style="text-align:center">
-            <img src="${apiUrl}" alt="Quoted image" onerror="this.style.display='none'; document.getElementById('result').insertAdjacentHTML('beforeend','<p>Gagal memuat gambar.</p>');" />
+          <p style="text-align:left;color:var(--muted);margin:6px 0">Hasil:</p>
+          <div class="media-wrap">
+            <img src="${apiUrl}" alt="Quoted image" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend','<p>Gagal memuat gambar.</p>');" />
           </div>
           <a class="download-btn" href="${apiUrl}" target="_blank" rel="noopener" download="quoted.png">⬇️ Download</a>
         `;
-      }, 800);
+      }, 500);
     };
 
-    // TikTok Downloader (izumiiiiiiii.dpdns.org)
-    window.downloadTiktok = async function () {
-      const urlInput = document.getElementById("tiktok-url");
-      const resultDiv = document.getElementById("result");
-      if (!urlInput) return;
+    /* ---- TikTok Downloader (izumiiiiiiii.dpdns.org) ---- */
+    window.downloadTiktok = async function(){
+      const url = document.getElementById('tiktok-url')?.value?.trim();
+      const resultDiv = document.getElementById('result');
+      if(!url){ alert('Harap masukkan URL TikTok!'); return; }
+      resultDiv.innerHTML = '<div class="loader" role="status" aria-label="Loading"></div><p>Mengunduh...</p>';
 
-      const url = urlInput.value.trim();
-      if (!url) return alert("Harap masukkan URL TikTok terlebih dahulu!");
+      try{
+        const api = `https://izumiiiiiiii.dpdns.org/downloader/tiktok?url=${encodeURIComponent(url)}`;
+        const res = await fetch(api);
+        if(!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
 
-      resultDiv.innerHTML = '<div class="loader" role="status" aria-label="Loading"></div><p>Mengunduh video TikTok...</p>';
-
-      try {
-        const apiEndpoint = `https://izumiiiiiiii.dpdns.org/downloader/tiktok?url=${encodeURIComponent(url)}`;
-        const response = await fetch(apiEndpoint);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const data = await response.json();
-
-        if (data?.status === true && data?.result) {
+        if(data?.status === true && data?.result){
           const videoUrl = data.result.hdplay || data.result.play || data.result.wmplay;
-          if (videoUrl) {
+          if(videoUrl){
             resultDiv.innerHTML = `
-              <p><strong>${escapeHtml(data.result.title || "Video TikTok")}</strong></p>
-              <div style="text-align:center">
+              <p style="text-align:left;color:var(--muted);margin:6px 0"><strong>${escapeHtml(data.result.title || 'Video TikTok')}</strong></p>
+              <div class="media-wrap">
                 <video controls autoplay muted loop playsinline>
                   <source src="${videoUrl}" type="video/mp4" />
                   Browser Anda tidak mendukung video.
@@ -478,125 +372,156 @@
               <a class="download-btn" href="${videoUrl}" target="_blank" rel="noopener" download="tiktok.mp4">⬇️ Download Video</a>
             `;
           } else {
-            resultDiv.innerHTML = "<p>Tidak ditemukan link video dalam respon API.</p>";
+            resultDiv.innerHTML = '<p>Tidak ditemukan link video dalam respon API.</p>';
           }
         } else {
-          resultDiv.innerHTML = `<p>Gagal mendapatkan video: ${escapeHtml(data?.message || "Unknown error")}</p>`;
+          resultDiv.innerHTML = `<p>Gagal mendapatkan video: ${escapeHtml(data?.message || 'Unknown error')}</p>`;
         }
-      } catch (e) {
-        resultDiv.innerHTML = `<p>Error: ${escapeHtml(e.message)}</p>`;
-        console.error("downloadTiktok error:", e);
+      }catch(err){
+        console.error('downloadTiktok error', err);
+        resultDiv.innerHTML = `<p>Error: ${escapeHtml(err.message)}</p>`;
       }
     };
 
-    // ---------------- new: Fake Call WhatsApp ----------------
-    // API: https://api.zenzxz.my.id/maker/fakecall?nama=&durasi=&avatar=
-    window.generateFakeCall = async function () {
-      const name = (document.getElementById("fc-nama")?.value || "").trim();
-      const duration = (document.getElementById("fc-durasi")?.value || "").trim();
-      const avatar = (document.getElementById("fc-avatar")?.value || "").trim();
-      const resultDiv = document.getElementById("fakecall-result");
+    /* ---- Fake Call WhatsApp (api.zenzxz.my.id) ---- */
+    window.generateFakeCall = async function(){
+      const name = (document.getElementById('fc-nama')?.value || '').trim();
+      const duration = (document.getElementById('fc-durasi')?.value || '').trim();
+      const avatar = (document.getElementById('fc-avatar')?.value || '').trim();
+      const resultDiv = document.getElementById('fakecall-result');
 
-      if (!name) return alert("Masukkan nama pemanggil!");
-      if (!duration || isNaN(duration) || Number(duration) <= 0) return alert("Masukkan durasi valid (detik)!");
-      // avatar optional
+      if(!name){ alert('Masukkan nama pemanggil!'); return; }
+      if(!duration || isNaN(duration) || Number(duration) <= 0){ alert('Masukkan durasi valid (detik)!'); return; }
 
       resultDiv.innerHTML = '<div class="loader" role="status" aria-label="Loading"></div><p>Menghasilkan fake call...</p>';
 
-      try {
-        // build API url
+      try{
         const api = `https://api.zenzxz.my.id/maker/fakecall?nama=${encodeURIComponent(name)}&durasi=${encodeURIComponent(duration)}&avatar=${encodeURIComponent(avatar)}`;
-
         const res = await fetch(api);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const contentType = (res.headers.get("content-type") || "").toLowerCase();
+        if(!res.ok) throw new Error('HTTP ' + res.status);
+        const ct = (res.headers.get('content-type') || '').toLowerCase();
 
-        // Jika API mengembalikan JSON dengan link (banyak layanan kembalikan JSON)
-        if (contentType.includes("application/json")) {
+        if(ct.includes('application/json')){
           const json = await res.json();
-          // struktur kemungkinan: { status: true, result: { url: '...', ... } } or { status: true, url: '...' }
-          const imgUrl = json?.result?.url || json?.url || json?.result?.image || null;
-
-          if (imgUrl) {
+          // cari URL image di beberapa kemungkinan field
+          const img = json?.result?.url || json?.url || json?.result?.image || null;
+          if(img){
             resultDiv.innerHTML = `
-              <p><strong>Fake Call untuk: ${escapeHtml(name)}</strong></p>
-              <div style="text-align:center">
-                <img src="${imgUrl}" alt="Fake Call Preview" onerror="this.style.display='none'; document.getElementById('fakecall-result').insertAdjacentHTML('beforeend','<p>Gagal memuat preview.</p>');" />
+              <p style="text-align:left;color:var(--muted);margin:6px 0"><strong>Fake Call untuk: ${escapeHtml(name)}</strong></p>
+              <div class="media-wrap">
+                <img src="${img}" alt="Fake Call Preview" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend','<p>Gagal memuat preview.</p>');" />
               </div>
-              <a class="download-btn" href="${imgUrl}" target="_blank" rel="noopener" download="fakecall.png">⬇️ Download</a>
+              <a class="download-btn" href="${img}" target="_blank" rel="noopener" download="fakecall.png">⬇️ Download</a>
             `;
-            return;
           } else {
-            // jika JSON tapi tidak memuat url, tampilkan JSON untuk debug
-            resultDiv.innerHTML = `<pre style="white-space:pre-wrap; max-height:300px; overflow:auto; background:#111; padding:12px; border-radius:8px;">${escapeHtml(JSON.stringify(json, null, 2))}</pre>`;
-            return;
+            // tampilkan json untuk debug
+            resultDiv.innerHTML = `<pre style="text-align:left;background:#0b0b0b;padding:10px;border-radius:8px;max-height:320px;overflow:auto;">${escapeHtml(JSON.stringify(json,null,2))}</pre>`;
           }
+          return;
         }
 
-        // Jika API mengembalikan langsung image/blob
-        if (contentType.startsWith("image/") || contentType.includes("octet-stream")) {
+        if(ct.startsWith('image/') || ct.includes('octet-stream')){
           const blob = await res.blob();
-          const blobUrl = URL.createObjectURL(blob);
+          const urlBlob = URL.createObjectURL(blob);
           resultDiv.innerHTML = `
-            <p><strong>Fake Call untuk: ${escapeHtml(name)}</strong></p>
-            <div style="text-align:center">
-              <img src="${blobUrl}" alt="Fake Call Preview" />
+            <p style="text-align:left;color:var(--muted);margin:6px 0"><strong>Fake Call untuk: ${escapeHtml(name)}</strong></p>
+            <div class="media-wrap">
+              <img src="${urlBlob}" alt="Fake Call Preview" />
             </div>
-            <a class="download-btn" href="${blobUrl}" target="_blank" rel="noopener" download="fakecall.png">⬇️ Download</a>
+            <a class="download-btn" href="${urlBlob}" target="_blank" rel="noopener" download="fakecall.png">⬇️ Download</a>
           `;
           return;
         }
 
-        // fallback: coba ambil sebagai text
+        // fallback: text
         const text = await res.text();
-        resultDiv.innerHTML = `<pre style="white-space:pre-wrap; max-height:300px; overflow:auto; background:#111; padding:12px; border-radius:8px;">${escapeHtml(text)}</pre>`;
-      } catch (err) {
-        console.error("generateFakeCall error:", err);
+        resultDiv.innerHTML = `<pre style="text-align:left;background:#0b0b0b;padding:10px;border-radius:8px;max-height:320px;overflow:auto;">${escapeHtml(text)}</pre>`;
+      }catch(err){
+        console.error('generateFakeCall error', err);
         resultDiv.innerHTML = `<p>Error: ${escapeHtml(err.message)}. Cek console/network.</p>`;
       }
     };
 
-    // ---------------- DeepSeek, copy helper, escape ----------------
-    function escapeHtml(str = "") {
-      return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
+    /* ---- DeepSeek AI (parsing code blocks) ---- */
+    window.askDeepSeek = async function(){
+      const input = document.getElementById('deepseek-input')?.value?.trim();
+      const chatDiv = document.getElementById('deepseek-chat');
+      if(!input){ alert('Harap tulis pertanyaan!'); return; }
 
-    // copy helper for code blocks
-    function copyCode(elOrId) {
-      // supports passing button element (this) or ID
-      let btn = null;
-      if (typeof elOrId === "string") {
-        btn = document.getElementById(elOrId);
-      } else {
-        btn = elOrId;
-      }
-      if (!btn) return;
-      const pre = btn.nextElementSibling || btn.parentElement.querySelector("pre");
-      if (!pre) return;
-      const code = pre.innerText;
-      navigator.clipboard.writeText(code).then(() => {
-        const old = btn.innerText;
-        btn.innerText = "Copied!";
-        setTimeout(() => btn.innerText = old, 1500);
-      });
-    }
-
-    // DeepSeek AI (sama seperti sebelumnya)
-    window.askDeepSeek = async function () {
-      const input = document.getElementById("deepseek-input")?.value.trim();
-      const chatDiv = document.getElementById("deepseek-chat");
-      if (!input) return alert("Harap tulis pertanyaan!");
-
-      // tampilkan pertanyaan user
       chatDiv.innerHTML += `<div class="bubble user">${escapeHtml(input)}</div>`;
       chatDiv.scrollTop = chatDiv.scrollHeight;
-
-      // loader sementara
-      const loaderId = "loader-" + Date.now();
+      const loaderId = 'loader-'+Date.now();
       chatDiv.innerHTML += `<div id="${loaderId}" class="bubble ai"><div class="loader"></div></div>`;
-      chatDiv.scrollTop = c                              
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+
+      try{
+        const endpoint = `https://izumiiiiiiii.dpdns.org/ai/deepseek?messages=${encodeURIComponent(input)}`;
+        const res = await fetch(endpoint);
+        const data = await res.json();
+        document.getElementById(loaderId).remove();
+
+        if(data?.status === true && data?.message){
+          let msg = data.message;
+
+          // parse markdown code blocks ```lang\ncode\n```
+          const regex = /```(\w+)?\n([\s\S]*?)```/g;
+          let final = msg;
+          let i=0;
+          let m;
+          while((m = regex.exec(msg)) !== null){
+            i++;
+            const lang = (m[1]||'text').toUpperCase();
+            const code = m[2] || '';
+            const block = `
+              <div class="code-block">
+                <div class="code-title">${escapeHtml(lang)}</div>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <pre>${escapeHtml(code)}</pre>
+              </div>
+            `;
+            final = final.replace(m[0], block);
+          }
+
+          // split paragraphs and keep as bubble
+          // we append final inside one ai bubble to keep grouping
+          chatDiv.innerHTML += `<div class="bubble ai">${final}</div>`;
+        } else {
+          chatDiv.innerHTML += `<div class="bubble ai">Gagal mendapatkan jawaban.</div>`;
+        }
+      }catch(err){
+        document.getElementById(loaderId).remove();
+        console.error('askDeepSeek error', err);
+        chatDiv.innerHTML += `<div class="bubble ai">Error: ${escapeHtml(err.message)}</div>`;
+      }
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+    };
+
+    /* ---- copy code helper ---- */
+    function copyCode(btn){
+      // button is inside code-block, next element sibling might be <pre> or we find pre inside parent
+      const parent = btn.parentElement;
+      const pre = parent.querySelector('pre');
+      if(!pre) return;
+      const txt = pre.innerText || pre.textContent;
+      navigator.clipboard.writeText(txt).then(()=>{
+        const old = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(()=> btn.innerText = old, 1400);
+      }).catch(()=> alert('Gagal salin ke clipboard'));
+    }
+
+    /* keep focus UX: close sidebar when clicking outside on mobile */
+    document.addEventListener('click', (e)=>{
+      if(!sidebar.contains(e.target) && !hamburger.contains(e.target) && sidebar.classList.contains('open')){
+        toggleSidebar();
+      }
+    });
+
+    /* keyboard nav for menu (accessibility) */
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape' && sidebar.classList.contains('open')) toggleSidebar();
+    });
+  </script>
+</body>
+</html>
+          
