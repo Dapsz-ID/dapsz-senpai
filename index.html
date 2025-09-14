@@ -277,14 +277,23 @@
 
     /* ---- Renderers ---- */
     function renderGenerator(){
-      content.innerHTML = `
-        <div class="container">
-          <h2>iPhone Quoted Generator</h2>
-          <input id="message" placeholder="Isi Kata Kata" aria-label="Isi Kata Kata" />
-          <button class="primary" onclick="generateImage()">Buat Quoted</button>
-          <div class="result" id="result" aria-live="polite"></div>
-        </div>`;
-    }
+  content.innerHTML = `
+    <div class="container">
+      <h2>iPhone Quoted Generator</h2>
+      <label style="display:block;text-align:left;margin-bottom:6px">Pesan</label>
+      <input id="msg" placeholder="Tulis pesan chat" aria-label="Pesan" />
+      
+      <label style="display:block;text-align:left;margin-bottom:6px">Jam (contoh: 11:26)</label>
+      <input id="jam" placeholder="11:26" aria-label="Jam" />
+      
+      <label style="display:block;text-align:left;margin-bottom:6px">Statusbar (contoh: INDOSAT OOREDOO 88%)</label>
+      <input id="statusbar" placeholder="Status bar" aria-label="Statusbar" />
+
+      <button class="primary" onclick="generateImage()">Buat Quoted</button>
+      <div class="result" id="result" aria-live="polite"></div>
+    </div>`;
+}
+
 
     function renderTiktok(){
       content.innerHTML = `
@@ -326,24 +335,29 @@
 
     /* ---- iPhone Quoted Generator (brat.siputzx.my.id) ---- */
     window.generateImage = function(){
-      const message = document.getElementById('message')?.value?.trim();
-      const resultDiv = document.getElementById('result');
-      if(!message){ alert('Harap masukkan teks!'); return; }
-      resultDiv.innerHTML = '<div class="loader" role="status" aria-label="Loading"></div><p>Memproses...</p>';
+  const msg = document.getElementById('msg')?.value?.trim();
+  const jam = document.getElementById('jam')?.value?.trim() || "11:26";
+  const statusbar = document.getElementById('statusbar')?.value?.trim() || "INDOSAT OOREDOO 88%";
+  const resultDiv = document.getElementById('result');
+  
+  if(!msg){ alert('Harap masukkan pesan!'); return; }
+  
+  resultDiv.innerHTML = '<div class="loader"></div><p>Memproses...</p>';
 
-      const apiUrl = `https://brat.siputzx.my.id/iphone-quoted?time=11%3A26&messageText=${encodeURIComponent(message)}&carrierName=INDOSAT%20OOREDOO&batteryPercentage=88&signalStrength=4&emojiStyle=apple`;
+  const apiUrl = `https://api.zenzxz.my.id/maker/fakechatiphone?text=${encodeURIComponent(msg)}&time=${encodeURIComponent(jam)}&statusbar=${encodeURIComponent(statusbar)}`;
 
-      // show image element that loads from URL (CORS: image src is fine)
-      setTimeout(()=>{
-        resultDiv.innerHTML = `
-          <p style="text-align:left;color:var(--muted);margin:6px 0">Hasil:</p>
-          <div class="media-wrap">
-            <img src="${apiUrl}" alt="Quoted image" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend','<p>Gagal memuat gambar.</p>');" />
-          </div>
-          <a class="download-btn" href="${apiUrl}" target="_blank" rel="noopener" download="quoted.png">⬇️ Download</a>
-        `;
-      }, 500);
-    };
+  setTimeout(()=>{
+    resultDiv.innerHTML = `
+      <p style="text-align:left;color:var(--muted);margin:6px 0">Hasil:</p>
+      <div class="media-wrap">
+        <img src="${apiUrl}" alt="Quoted image" 
+             onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend','<p>Gagal memuat gambar.</p>');" />
+      </div>
+      <a class="download-btn" href="${apiUrl}" target="_blank" rel="noopener" download="quoted.png">⬇️ Download</a>
+    `;
+  }, 500);
+};
+
 
     /* ---- TikTok Downloader (izumiiiiiiii.dpdns.org) ---- */
     window.downloadTiktok = async function(){
