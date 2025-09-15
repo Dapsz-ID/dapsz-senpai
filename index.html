@@ -1,283 +1,480 @@
-                          <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dapsz Senpai</title>
   <style>
+    /* ---- base ---- */
+    :root{
+      --purple:#7b3fe4;
+      --skyblue:#00c6ff;
+      --grad: linear-gradient(135deg,var(--purple),var(--skyblue));
+      --bg: linear-gradient(180deg, rgba(8,6,20,0.9), rgba(10,8,25,0.9));
+      --card: rgba(18,16,30,0.85);
+      --muted:#bdbdbd;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #8e44ad, #00c6ff);
-      color: #fff;
-      overflow-x: hidden;
-    }
-    header {
-      background: rgba(0,0,0,0.5);
-      padding: 15px;
-      text-align: center;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 1.5em;
-    }
-    .container {
-      padding: 20px;
-      margin: auto;
-      max-width: 900px;
-    }
-    .menu {
-      background: rgba(0,0,0,0.6);
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
-    .menu h2 {
-      margin-top: 0;
-      font-size: 1.3em;
-    }
-    input, button, textarea {
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      margin: 5px 0;
-      width: 100%;
-    }
-    button {
-      background: linear-gradient(135deg, #8e44ad, #00c6ff);
-      color: white;
-      cursor: pointer;
-    }
-    button:hover { opacity: 0.9; }
-    .statusbar {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.9em;
-      margin-bottom: 10px;
-    }
-    .chat-output {
-      background: rgba(0,0,0,0.7);
-      padding: 10px;
-      border-radius: 10px;
-      margin-top: 10px;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-    .bubble {
-      margin: 5px 0;
-      padding: 10px;
-      border-radius: 10px;
-      max-width: 80%;
-      word-wrap: break-word;
-    }
-    .bubble.user {
-      background: #2c82c9;
-      align-self: flex-end;
-    }
-    .bubble.ai {
-      background: #27ae60;
-      align-self: flex-start;
-    }
-    pre {
-      background: #111;
-      padding: 10px;
-      border-radius: 8px;
-      overflow-x: auto;
-      position: relative;
+      background: var(--bg);
       color: #eee;
+      font-family: "Poppins", Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-size: 1.05rem;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
-    .copy-btn {
-      position: absolute;
-      right: 10px; top: 10px;
-      background: #444;
-      color: #fff;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 0.8em;
-    }
-    /* Sidebar */
-    .sidebar {
-      height: 100%;
-      width: 0;
+
+    /* header / brand */
+    header {
       position: fixed;
-      z-index: 2000;
       top: 0;
       left: 0;
-      background: rgba(0,0,0,0.95);
-      overflow-x: hidden;
-      transition: 0.4s;
-      padding-top: 60px;
+      width: 100%;
+      height: 72px;
+      background: rgba(8,6,20,0.6);
+      backdrop-filter: blur(8px);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding: 8px 16px;
+      z-index:1002;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.5);
     }
-    .sidebar a {
-      padding: 10px 20px;
-      text-decoration: none;
-      color: #fff;
-      display: block;
-      transition: 0.3s;
+    .brand {
+      display:flex;
+      align-items:center;
+      gap:12px;
     }
-    .sidebar a:hover { background: rgba(255,255,255,0.1); }
-    .openbtn {
-      font-size: 20px;
-      cursor: pointer;
-      background: none;
-      border: none;
-      color: white;
-      padding: 10px 15px;
+    .logo {
+      width:44px;height:44px;border-radius:10px;
+      background:var(--grad);
+      box-shadow: 0 6px 18px rgba(123,63,228,0.18), inset 0 -6px 18px rgba(0,198,255,0.06);
+      display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;
+      font-size:1.05rem;
     }
-    .closebtn {
-      position: absolute;
-      top: 10px; right: 20px;
-      font-size: 30px;
-      color: white;
-      text-decoration: none;
+    header h1{
+      margin:0;
+      font-size:1.15rem;
+      letter-spacing:0.4px;
+      background: var(--grad);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      user-select:none;
     }
+
+    /* header small status (clock/ip/batt) */
+    .status-inline { display:flex; gap:12px; align-items:center; color:var(--muted); font-size:0.92rem; }
+    .status-item { display:flex; gap:8px; align-items:center; background:rgba(255,255,255,0.02); padding:6px 10px; border-radius:10px; }
+
+    /* hamburger */
+    .hamburger {
+      width:44px;height:44px;border-radius:10px; display:flex;align-items:center;justify-content:center;
+      cursor:pointer;background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03);
+    }
+    .hamburger span{
+      display:block;height:3px;width:18px;border-radius:3px;background:var(--purple);
+      transition: all .25s ease;
+    }
+    .hamburger.active span:nth-child(1){transform: rotate(45deg) translate(4px,4px)}
+    .hamburger.active span:nth-child(2){opacity:0}
+    .hamburger.active span:nth-child(3){transform: rotate(-45deg) translate(4px,-4px)}
+
+    /* sidebar */
+    .sidebar{
+      position: fixed;
+      top: 0;
+      right: -340px;
+      width: 340px;
+      height: 100vh;
+      background: linear-gradient(180deg, rgba(10,10,18,0.98), rgba(6,6,12,0.98));
+      padding: 90px 18px 20px;
+      transition: right .28s cubic-bezier(.2,.9,.2,1);
+      z-index:1050;
+      box-shadow: -6px 0 40px rgba(0,0,0,0.6);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .sidebar.open{right:0}
+    .sidebar h2{color:var(--purple); margin:0 0 6px 0; font-weight:700}
+    .menu-item{
+      background:none;border:none;color:var(--skyblue);text-align:left;padding:12px;border-radius:10px;cursor:pointer;font-size:1.03rem;
+      transition: all .15s ease;
+    }
+    .menu-item.active, .menu-item:hover{background: rgba(123,63,228,0.10); color: var(--purple); font-weight:700; transform:translateX(-4px);}
+
+    /* main container */
+    main{padding:100px 18px 36px; min-height:100vh}
+    .container{
+      background: var(--card);
+      padding: 20px;
+      border-radius: 16px;
+      max-width: 820px;
+      margin: 0 auto 24px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.45);
+      border: 1px solid rgba(255,255,255,0.02);
+    }
+    .container h2{margin:0 0 10px 0; font-size:1.3rem; color:#fff}
+
+    input, textarea, select, button {
+      font-family: inherit;
+      font-size: 1.05rem;
+    }
+    input, textarea {
+      width:100%;
+      padding:12px 14px;
+      border-radius:12px;
+      border:2px solid rgba(255,255,255,0.04);
+      background:linear-gradient(180deg, rgba(6,6,10,0.7), rgba(12,12,18,0.75));
+      color:#eee;
+      outline:none;margin-bottom:12px;
+    }
+    textarea{min-height:120px; resize:vertical}
+    input:focus, textarea:focus{box-shadow:0 6px 30px rgba(123,63,228,0.08); border-color: rgba(0,198,255,0.14)}
+
+    button.primary{
+      background: var(--grad);
+      color:#07111a;
+      border:none;
+      padding:10px 18px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:800;
+      box-shadow: 0 8px 30px rgba(123,63,228,0.12);
+    }
+    button.primary:hover{transform:translateY(-2px)}
+
+    .result{
+      margin-top:12px;
+      min-height:60px;
+      text-align:center;
+      word-wrap:break-word;
+      overflow:hidden;
+    }
+
+    /* download button style */
+    a.download-btn, .download-btn {
+      display:inline-block;
+      background: var(--grad);
+      color:white;
+      padding:10px 16px;
+      border-radius:10px;
+      text-decoration:none;
+      font-weight:700;
+      margin-top:10px;
+      box-shadow: 0 8px 30px rgba(0,198,255,0.08);
+    }
+    a.download-btn:hover{opacity:0.98; transform:translateY(-2px)}
+
+    /* media */
+    .result .media-wrap{
+      max-width: 100%;
+      width: 100%;
+      overflow: hidden;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+    .result img, .result video {
+      max-width: 95%;
+      width: 95%;
+      height: auto;
+      border-radius:12px;
+      display:inline-block;
+      margin:10px auto;
+      object-fit:contain;
+    }
+
+    /* chat bubbles */
+    .chat-container{
+      max-height:420px;
+      overflow-y:auto;
+      padding:12px;
+      background: rgba(0,0,0,0.15);
+      border-radius:12px;
+      text-align:left;
+      margin-top:12px;
+      border: 1px solid rgba(255,255,255,0.02);
+    }
+    .bubble{display:inline-block;padding:10px 14px;border-radius:14px;margin:8px 0;max-width:78%;white-space:pre-wrap;line-height:1.45}
+    .bubble.user{background:linear-gradient(90deg,var(--skyblue),var(--purple)); color:#021226; float:right; clear:both; border-bottom-right-radius:6px}
+    .bubble.ai{background:linear-gradient(180deg, rgba(20,20,20,0.95), rgba(28,28,28,0.95));color:#eee; float:left; clear:both; border-bottom-left-radius:6px}
+
+    /* code block style */
+    .code-block{
+      background:#050507;
+      border:1px solid rgba(123,63,228,0.12);
+      padding:10px 12px;
+      border-radius:10px;
+      position:relative;
+      overflow:auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      margin-top:8px;
+      font-size:0.95rem;
+    }
+    .code-title{color:var(--purple);font-weight:700;margin-bottom:8px}
+    .copy-btn{
+      position:absolute;right:10px;top:10px;
+      background:var(--grad); color:#fff; padding:6px 10px; border-radius:8px; border:none; cursor:pointer; font-weight:700;
+      box-shadow: 0 8px 20px rgba(123,63,228,0.12);
+    }
+
+    /* loader */
+    .loader{border:4px solid rgba(255,255,255,0.06);border-top:4px solid var(--purple);width:40px;height:40px;border-radius:50%;animation:spin 1s linear infinite;margin:14px auto}
+    @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+
+    /* small screens */
+    @media (max-width:740px){
+      .sidebar{width:300px; right:-300px}
+      main{padding:110px 12px 36px}
+      .container{margin:12px}
+      header h1{font-size:1.05rem}
+      .logo{width:40px;height:40px}
+    }
+    /* welcome animations */
+    @keyframes fadeInUp { from {opacity:0; transform: translateY(8px)} to {opacity:1; transform: translateY(0)} }
   </style>
+
+  <!-- Highlight.js -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/dracula.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 </head>
 <body>
   <header>
-    <button class="openbtn" onclick="openNav()">☰</button>
-    <h1>Dapsz Senpai</h1>
+    <div class="brand" style="align-items:center">
+      <div class="logo" aria-hidden="true">DS</div>
+      <h1>Dapsz Senpai</h1>
+      <div class="status-inline" aria-hidden="true" style="margin-left:12px">
+        <div class="status-item">⏰ <span id="hdr-clock">--:--</span></div>
+        <div class="status-item">🌐 <span id="hdr-ip">...</span></div>
+        <div class="status-item">🔋 <span id="hdr-batt">-</span></div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:center">
+      <div class="hamburger" id="hamburger" role="button" aria-label="Toggle menu" tabindex="0" title="Menu">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
   </header>
 
-  <div id="mySidebar" class="sidebar">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-    <a href="#" onclick="renderHome()">Home</a>
-    <a href="#" onclick="renderFakechat()">Fakechat iPhone</a>
-    <a href="#" onclick="renderTiktok()">TikTok Downloader</a>
-    <a href="#" onclick="renderDeepseek()">DeepSeek AI</a>
-    <a href="#" onclick="renderFakecall()">Fakecall WhatsApp</a>
-  </div>
+  <nav class="sidebar" id="sidebar" aria-hidden="true">
+    <h2>Menu</h2>
+    <button class="menu-item active" id="menu-welcome" type="button">Beranda</button>
+    <button class="menu-item" id="menu-generator" type="button">iPhone Quoted Generator</button>
+    <button class="menu-item" id="menu-tiktok" type="button">TikTok Downloader</button>
+    <button class="menu-item" id="menu-deepseek" type="button">DeepSeek-AI</button>
+    <button class="menu-item" id="menu-fakecall" type="button">Fake Call WhatsApp</button>
+  </nav>
 
-  <div class="container" id="content"></div>
+  <main>
+    <div class="container" id="content"></div>
+  </main>
 
   <script>
-    function openNav(){ document.getElementById("mySidebar").style.width="250px"; }
-    function closeNav(){ document.getElementById("mySidebar").style.width="0"; }
+    /* ---- UI wiring ---- */
+    const hamburger = document.getElementById('hamburger');
+    const sidebar = document.getElementById('sidebar');
+    const content = document.getElementById('content');
+    const menuWelcome = document.getElementById('menu-welcome');
+    const menuGenerator = document.getElementById('menu-generator');
+    const menuTiktok = document.getElementById('menu-tiktok');
+    const menuDeepSeek = document.getElementById('menu-deepseek');
+    const menuFakeCall = document.getElementById('menu-fakecall');
 
-    function renderHome(){
-      content.innerHTML = `
-        <div class="menu">
-          <h2>Selamat Datang 👋</h2>
-          <p>Ini adalah website multi-fitur Dapsz Senpai ✨</p>
-        </div>`;
+    function toggleSidebar() {
+      const open = sidebar.classList.toggle('open');
+      hamburger.classList.toggle('active', open);
+      sidebar.setAttribute('aria-hidden', !open);
+    }
+    hamburger.addEventListener('click', toggleSidebar);
+    hamburger.addEventListener('keydown', (e) => {
+      if(e.key==='Enter' || e.key===' ') { e.preventDefault(); toggleSidebar(); }
+    });
+
+    function clearActive() {
+      document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('active'));
     }
 
-   renderHome();
-    
-    function renderFakechat(){
+    function showSection(id) {
+      clearActive();
+      document.getElementById(`menu-${id}`)?.classList.add('active');
+      // render corresponding
+      switch(id){
+        case 'welcome': renderWelcome(); break;
+        case 'generator': renderGenerator(); break;
+        case 'tiktok': renderTiktok(); break;
+        case 'deepseek': renderDeepSeek(); break;
+        case 'fakecall': renderFakeCall(); break;
+        default: renderWelcome();
+      }
+      // close sidebar on mobile
+      if(sidebar.classList.contains('open')) toggleSidebar();
+    }
+
+    menuWelcome.addEventListener('click', ()=> showSection('welcome'));
+    menuGenerator.addEventListener('click', ()=> showSection('generator'));
+    menuTiktok.addEventListener('click', ()=> showSection('tiktok'));
+    menuDeepSeek.addEventListener('click', ()=> showSection('deepseek'));
+    menuFakeCall.addEventListener('click', ()=> showSection('fakecall'));
+
+    /* ---------------- Welcome / Status-bar ---------------- */
+    function renderWelcome(){
       content.innerHTML = `
-        <div class="menu">
+      <div style="text-align:center; margin-bottom:12px;">
+        <div style="font-size:1.25rem; font-weight:700; animation:fadeInUp .9s both; color:transparent; background:var(--grad); -webkit-background-clip:text;">
+          Selamat Datang Di Website <span style="opacity:0.98">Dapsz Senpai</span>
+        </div>
+        <div style="margin-top:8px; color:var(--muted); font-size:1rem; animation:fadeInUp .9s .12s both;">
+          Silahkan klik menu untuk info lebih lanjut
+        </div>
+      </div>
+      <div class="container">
+        <h2>Beranda</h2>
+        <div id="status-bar" style="background:rgba(255,255,255,0.02);padding:12px;border-radius:12px;margin-bottom:14px;font-size:0.98rem;line-height:1.6">
+          <p style="margin:6px 0">⏰ Jam: <strong id="jam">--:--:--</strong></p>
+          <p style="margin:6px 0">🌐 IP: <strong id="ip">Mencari...</strong></p>
+          <p style="margin:6px 0">🔋 Baterai: <strong id="batre">-</strong></p>
+          <p style="margin:6px 0">📍 Lokasi: <strong id="lokasi">Mencari...</strong></p>
+        </div>
+        <p style="font-size:1.08rem; line-height:1.6; user-select:none;">
+          <!-- welcome message intentionally only at top -->
+        </p>
+      </div>`;
+
+      // header small clock
+      function updateHeaderClock(){
+        const now = new Date();
+        const hh = String(now.getHours()).padStart(2,'0');
+        const mm = String(now.getMinutes()).padStart(2,'0');
+        document.getElementById('hdr-clock').textContent = `${hh}:${mm}`;
+      }
+      updateHeaderClock(); setInterval(updateHeaderClock, 1000);
+
+      // jam besar di content
+      function updateJam(){
+        const now = new Date();
+        document.getElementById("jam").textContent =
+          now.toLocaleTimeString("id-ID",{hour12:false});
+      }
+      updateJam();
+      setInterval(updateJam,1000);
+
+      // IP (content + header)
+      fetch("https://api.ipify.org?format=json").then(r=>r.json()).then(d=>{
+        if(document.getElementById("ip")) document.getElementById("ip").textContent = d.ip;
+        const hdrIp = document.getElementById('hdr-ip');
+        if(hdrIp) hdrIp.textContent = d.ip;
+      }).catch(()=> {
+        if(document.getElementById("ip")) document.getElementById("ip").textContent = "Gagal ambil IP";
+        const hdrIp = document.getElementById('hdr-ip');
+        if(hdrIp) hdrIp.textContent = "gagal";
+      });
+
+      // Battery
+      function setBatteryUI(level, charging=false){
+        const pct = Math.round(level*100) + "%";
+        const txt = charging ? pct + " (🔌 Charging)" : pct;
+        const el = document.getElementById("batre");
+        if(el) el.textContent = txt;
+        const hdr = document.getElementById('hdr-batt');
+        if(hdr) hdr.textContent = pct;
+      }
+      if('getBattery' in navigator){
+        navigator.getBattery().then(bat=>{
+          setBatteryUI(bat.level, bat.charging);
+          bat.addEventListener('levelchange', ()=> setBatteryUI(bat.level, bat.charging));
+          bat.addEventListener('chargingchange', ()=> setBatteryUI(bat.level, bat.charging));
+        }).catch(()=> { const el = document.getElementById("batre"); if(el) el.textContent = "Tidak support" });
+      } else {
+        const el = document.getElementById("batre"); if(el) el.textContent = "Tidak support";
+      }
+
+      // Geolocation
+      if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(pos=>{
+          const {latitude,longitude} = pos.coords;
+          const loc = document.getElementById("lokasi");
+          if(loc) loc.textContent = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+        }, ()=> {
+          const loc = document.getElementById("lokasi");
+          if(loc) loc.textContent = "Ditolak/gagal";
+        });
+      } else {
+        const loc = document.getElementById("lokasi");
+        if(loc) loc.textContent = "Tidak support";
+      }
+    }
+
+    /* initial render */
+    renderWelcome();
+
+    /* ---- Renderers ---- */
+    function renderGenerator(){
+      content.innerHTML = `
+        <div class="container">
           <h2>iPhone Quoted Generator</h2>
-          <div class="statusbar"><span>09:41</span><span>🔋100%</span></div>
-          <input id="msg" placeholder="Tulis pesan..." />
-          <button onclick="makeFakechat()">Generate</button>
-          <div id="result"></div>
+          <label style="display:block;text-align:left;margin-bottom:6px">Pesan</label>
+          <input id="msg" placeholder="Tulis pesan chat" aria-label="Pesan" />
+          
+          <label style="display:block;text-align:left;margin-bottom:6px">Jam (contoh: 11:26)</label>
+          <input id="gen-jam" placeholder="11:26" aria-label="Jam" />
+          
+          <label style="display:block;text-align:left;margin-bottom:6px">Statusbar (contoh: INDOSAT OOREDOO 88%)</label>
+          <input id="statusbar" placeholder="Status bar" aria-label="Statusbar" />
+
+          <button class="primary" onclick="generateImage()">Buat Quoted</button>
+          <div class="result" id="result" aria-live="polite"></div>
         </div>`;
-    }
-    async function makeFakechat(){
-      const text = document.getElementById("msg").value;
-      if(!text) return;
-      const res = await fetch("https://api.zenzxz.my.id/maker/fakechatiphone?text="+encodeURIComponent(text));
-      const data = await res.json();
-      document.getElementById("result").innerHTML = `<img src="${data.result}" style="max-width:100%">`;
     }
 
     function renderTiktok(){
       content.innerHTML = `
-        <div class="menu">
+        <div class="container">
           <h2>TikTok Downloader</h2>
-          <input id="tturl" placeholder="Masukkan URL TikTok..." />
-          <button onclick="getTiktok()">Download</button>
-          <div id="ttresult"></div>
+          <input id="tiktok-url" type="url" placeholder="Masukkan URL TikTok" aria-label="Masukkan URL TikTok" />
+          <button class="primary" onclick="downloadTiktok()">Download</button>
+          <div class="result" id="result" aria-live="polite"></div>
         </div>`;
     }
-    async function getTiktok(){
-      const url = document.getElementById("tturl").value;
-      if(!url) return;
-      const res = await fetch("https://izumiiiiiiii.dpdns.org/api/download/tiktok?url="+encodeURIComponent(url));
-      const data = await res.json();
-      document.getElementById("ttresult").innerHTML = `
-        <video src="${data.result}" controls style="max-width:100%"></video>`;
-    }
 
-    function renderDeepseek(){
+    function renderDeepSeek(){
       content.innerHTML = `
-        <div class="menu">
-          <h2>DeepSeek AI</h2>
-          <div class="chat-input">
-            <input id="deepseek-input" type="text" placeholder="Tulis pertanyaanmu di sini..." />
-            <button onclick="sendDeepseek()">Kirim</button>
-            <button onclick="clearDeepseek()">Clear</button>
+        <div class="container">
+          <h2>DeepSeek-AI</h2>
+          <textarea id="deepseek-input" placeholder="Tulis pertanyaanmu di sini..." rows="4"></textarea>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="primary" onclick="askDeepSeek()">Kirim</button>
+            <button style="background:rgba(255,255,255,0.06);color:#fff;border-radius:10px;padding:10px 14px;border:none;cursor:pointer;" onclick="clearDeepseek()">Clear</button>
           </div>
-          <div id="deepseek-output" class="chat-output"></div>
+          <div class="chat-container" id="deepseek-chat" aria-live="polite"></div>
         </div>`;
     }
-    function sendDeepseek(){
-      const input = document.getElementById("deepseek-input");
-      const output = document.getElementById("deepseek-output");
-      if(input.value.trim()==="") return;
-      output.innerHTML += `<div class="bubble user">${input.value}</div>`;
-      askDeepSeek(input.value);
-      input.value="";
-    }
-    function clearDeepseek(){
-      document.getElementById("deepseek-input").value="";
-      document.getElementById("deepseek-output").innerHTML="";
-    }
-    async function askDeepSeek(q){
-      const chatDiv = document.getElementById("deepseek-output");
-      const loaderId = "loader"+Date.now();
-      chatDiv.innerHTML += `<div id="${loaderId}" class="bubble ai">⏳ Thinking...</div>`;
-      chatDiv.scrollTop=chatDiv.scrollHeight;
-      try{
-        const res = await fetch("https://api.zenzxz.my.id/deepseek?q="+encodeURIComponent(q));
-        const data = await res.json();
-        document.getElementById(loaderId)?.remove();
-        if(data && data.result){
-          chatDiv.innerHTML += `<div class="bubble ai">${data.result}</div>`;
-          chatDiv.querySelectorAll("pre code").forEach(el=>hljs.highlightElement(el));
-        } else {
-          chatDiv.innerHTML += `<div class="bubble ai">Gagal: ${data?.message||'Unknown error'}</div>`;
-        }
-        chatDiv.scrollTop=chatDiv.scrollHeight;
-      }catch(err){
-        document.getElementById(loaderId)?.remove();
-        chatDiv.innerHTML += `<div class="bubble ai">Error: ${err.message}</div>`;
-        chatDiv.scrollTop=chatDiv.scrollHeight;
-      }
-    }
 
-    function renderFakecall(){
+    function renderFakeCall(){
       content.innerHTML = `
-        <div class="menu">
-          <h2>Fakecall WhatsApp</h2>
-          <input id="fcname" placeholder="Nama Caller..." />
-          <button onclick="makeFakecall()">Generate</button>
-          <div id="fcresult"></div>
+        <div class="container">
+          <h2>Fake Call WhatsApp</h2>
+          <label style="display:block;text-align:left;margin-bottom:6px">Nama pemanggil</label>
+          <input id="fc-nama" placeholder="Contoh: Ayu, Budi" aria-label="Nama pemanggil" />
+          <label style="display:block;text-align:left;margin-bottom:6px">Durasi (detik)</label>
+          <input id="fc-durasi" type="number" placeholder="Contoh: 30" aria-label="Durasi (detik)" />
+          <label style="display:block;text-align:left;margin-bottom:6px">Avatar (URL gambar, optional)</label>
+          <input id="fc-avatar" placeholder="https://..." aria-label="Avatar URL" />
+          <button class="primary" onclick="generateFakeCall()">Buat Fake Call</button>
+          <div class="result" id="fakecall-result" aria-live="polite"></div>
         </div>`;
     }
-    async function makeFakecall(){
-      const name = document.getElementById("fcname").value;
-      if(!name) return;
-      const res = await fetch("https://api.zenzxz.my.id/maker/fakecall?nama="+encodeURIComponent(name));
-      const data = await res.json();
-      document.getElementById("fcresult").innerHTML = `<img src="${data.result}" style="max-width:100%">`;
-    }
-    
-
-
 
     /* ---- Utilities ---- */
     function escapeHtml(s=''){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-    /* ---- iPhone Quoted Generator (brat.siputzx.my.id) ---- */
+    /* ---- iPhone Quoted Generator (api.zenzxz.my.id) ---- */
     window.generateImage = function(){
       const msg = document.getElementById('msg')?.value?.trim();
       const jam = document.getElementById('gen-jam')?.value?.trim() || "11:26";
@@ -301,7 +498,6 @@
         `;
       }, 500);
     };
-
 
     /* ---- TikTok Downloader (izumiiiiiiii.dpdns.org) ---- */
     window.downloadTiktok = async function(){
@@ -402,7 +598,8 @@
 
     /* ---- DeepSeek AI (parsing code blocks + highlight) ---- */
     window.askDeepSeek = async function(){
-      const input = document.getElementById('deepseek-input')?.value?.trim();
+      const inputEl = document.getElementById('deepseek-input');
+      const input = inputEl?.value?.trim();
       const chatDiv = document.getElementById('deepseek-chat');
       if(!input){ alert('Harap tulis pertanyaan!'); return; }
 
@@ -413,6 +610,9 @@
       const loaderId = 'loader-'+Date.now();
       chatDiv.innerHTML += `<div id="${loaderId}" class="bubble ai"><div class="loader" aria-hidden="true"></div></div>`;
       chatDiv.scrollTop = chatDiv.scrollHeight;
+
+      // clear input for UX
+      if(inputEl) inputEl.value = '';
 
       try{
         const endpoint = `https://izumiiiiiiii.dpdns.org/ai/deepseek?messages=${encodeURIComponent(input)}`;
@@ -428,9 +628,7 @@
           // parse markdown code blocks ```lang\ncode\n```
           const regex = /```(\w+)?\n([\s\S]*?)```/g;
           let final = msg;
-          let m;
           const blocks = [];
-          // we will replace with placeholders to avoid nested HTML issues
           let idx = 0;
           final = msg.replace(regex, function(full, g1, g2){
             const lang = (g1||'text').toLowerCase();
@@ -441,11 +639,11 @@
             return placeholder;
           });
 
-          // escape remaining HTML
+          // escape remaining HTML and convert newlines to <br>
           final = escapeHtml(final).replace(/\n/g,'<br>');
 
-          // assemble HTML replacing placeholders with proper code-block markup
-          blocks.forEach((b, i)=>{
+          // replace placeholders with proper code HTML
+          blocks.forEach((b)=>{
             const codeHtml = `
               <div class="code-block">
                 <div class="code-title">${escapeHtml((b.lang||'text').toUpperCase())}</div>
@@ -456,22 +654,22 @@
             final = final.replace(b.placeholder, codeHtml);
           });
 
-          // append final inside ai bubble
+          // append AI bubble with assembled HTML
           chatDiv.innerHTML += `<div class="bubble ai">${final}</div>`;
 
-          // run highlight on inserted code elements
-          // wait microtask to ensure DOM nodes exist
+          // highlight inserted code elements
           setTimeout(()=>{ 
             document.querySelectorAll('#deepseek-chat pre code').forEach((el)=>{ 
               try{ hljs.highlightElement(el); }catch(e){/* ignore */} 
             });
-          }, 30);
+          }, 40);
+
         } else {
           chatDiv.innerHTML += `<div class="bubble ai">Gagal mendapatkan jawaban.</div>`;
         }
       }catch(err){
-        const loaderEl = document.getElementById(loaderId);
-        if(loaderEl) loaderEl.remove();
+        const loaderEl2 = document.getElementById(loaderId);
+        if(loaderEl2) loaderEl2.remove();
         console.error('askDeepSeek error', err);
         chatDiv.innerHTML += `<div class="bubble ai">Error: ${escapeHtml(err.message)}</div>`;
       }
@@ -493,6 +691,20 @@
       }).catch(()=> alert('Gagal salin ke clipboard'));
     }
 
+    /* ---- clearDeepseek: reset input + remove last AI output ---- */
+    function clearDeepseek(){
+      const input = document.getElementById('deepseek-input');
+      if(input) input.value = '';
+      const chatDiv = document.getElementById('deepseek-chat');
+      if(!chatDiv) return;
+      // find last AI bubble (from end)
+      const bubbles = Array.from(chatDiv.querySelectorAll('.bubble.ai'));
+      if(bubbles.length > 0){
+        const lastAi = bubbles[bubbles.length - 1];
+        lastAi.remove();
+      }
+    }
+
     /* keep focus UX: close sidebar when clicking outside on mobile */
     document.addEventListener('click', (e)=>{
       if(!sidebar.contains(e.target) && !hamburger.contains(e.target) && sidebar.classList.contains('open')){
@@ -504,10 +716,11 @@
     document.addEventListener('keydown', (e)=>{
       if(e.key === 'Escape' && sidebar.classList.contains('open')) toggleSidebar();
     });
-  </script>
 
-  <!-- initialize highlight (safe to call early) -->
-  <script>window.hljs && hljs.configure({ignoreUnescapedHTML: true});</script>
+    /* initialize highlight.js config */
+    if(window.hljs && hljs.configure) {
+      hljs.configure({ignoreUnescapedHTML: true});
+    }
+  </script>
 </body>
 </html>
-                                      
