@@ -269,11 +269,64 @@
     menuDeepSeek.addEventListener('click', ()=> showSection('deepseek'));
     menuFakeCall.addEventListener('click', ()=> showSection('fakecall'));
 
-    // initial
-    function renderWelcome(){
-      content.innerHTML = `<div class="container"><p style="font-size:1.05rem; line-height:1.5; user-select:none;">Selamat Datang Di Website Dapsz Senpai,<br/>Pilih menu untuk mencoba fitur.</p></div>`;
+    
+  function renderWelcome(){
+    content.innerHTML = `
+      <div class="container">
+        <h2>Beranda</h2>
+        <div id="status-bar" style="background:#111;padding:12px;border-radius:12px;margin-bottom:14px;font-size:0.95rem;line-height:1.6">
+          <p>⏰ Jam: <span id="jam">--:--:--</span></p>
+          <p>🌐 IP: <span id="ip">Mencari...</span></p>
+          <p>🔋 Baterai: <span id="batre">-</span></p>
+          <p>📍 Lokasi: <span id="lokasi">Mencari...</span></p>
+        </div>
+        <p style="font-size:1.05rem; line-height:1.5; user-select:none;">
+          Selamat Datang di Website Dapsz Senpai,<br/>Pilih menu untuk mencoba fitur.
+        </p>
+      </div>`;
+
+    // ⏰ Jam realtime
+    function updateJam(){
+      const now = new Date();
+      document.getElementById("jam").textContent =
+        now.toLocaleTimeString("id-ID",{hour12:false});
     }
-    renderWelcome();
+    updateJam();
+    setInterval(updateJam,1000);
+
+    // 🌐 IP
+    fetch("https://api.ipify.org?format=json")
+      .then(res=>res.json())
+      .then(d=> document.getElementById("ip").textContent = d.ip)
+      .catch(()=> document.getElementById("ip").textContent = "Gagal ambil IP");
+
+    // 🔋 Baterai
+    if(navigator.getBattery){
+      navigator.getBattery().then(bat=>{
+        function updateBatre(){
+          document.getElementById("batre").textContent =
+            Math.round(bat.level*100)+"%" + (bat.charging?" (🔌 Charging)":"");
+        }
+        updateBatre();
+        bat.addEventListener("levelchange",updateBatre);
+        bat.addEventListener("chargingchange",updateBatre);
+      });
+    } else {
+      document.getElementById("batre").textContent = "Tidak support";
+    }
+
+    // 📍 Lokasi
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(pos=>{
+        const {latitude,longitude} = pos.coords;
+        document.getElementById("lokasi").textContent = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+      }, ()=> document.getElementById("lokasi").textContent = "Ditolak/ gagal");
+    } else {
+      document.getElementById("lokasi").textContent = "Tidak support";
+    }
+  }
+
+
 
     /* ---- Renderers ---- */
     function renderGenerator(){
